@@ -1,7 +1,15 @@
+# Excluding mac files
 .DS_Store
 
+
+# Excluding virtualenv files
 WebApplication/pyEnv/
 WebApplication/pyEnv*
 WebApplication/pyEnv
 
+# Excluding pycharm and python cache files
+WebApplication/.idea/
+WebApplication/WebApplication/__pycache__/
+WebApplication/.idea/*
+WebApplication/WebApplication/__pycache__/*
 
