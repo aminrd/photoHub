@@ -2,11 +2,15 @@ CREATE TABLE "userInfo" (
   "id" int PRIMARY KEY,
   "username" varchar,
   "email" varchar,
+  "verified" boolean,
   "phone" varchar,
-  "credit" int
+  "credit" int,
+  "profile_picture" Image,
+  "profile_thumbnail" Image,
+  "has_profile_picture" boolean
 );
 
-CREATE TABLE "user" (
+CREATE TABLE "client" (
   "id" int,
   "base_info" link,
   "projects" list[]
@@ -15,7 +19,6 @@ CREATE TABLE "user" (
 CREATE TABLE "designer" (
   "id" int,
   "base_info" link,
-  "profile_picture" link,
   "score" int,
   "avg_feedback" double,
   "rate" int,
@@ -34,7 +37,7 @@ CREATE TABLE "design" (
   "time_posted" datetime,
   "target_deadline" datetime,
   "time_finished" datetime,
-  "designer_requested" list[],
+  "designers_volunteered" list[],
   "status" list[],
   "input_image" list[],
   "output_image" imageFile
@@ -43,18 +46,17 @@ CREATE TABLE "design" (
 CREATE TABLE "imageFile" (
   "int" id,
   "image" file,
-  "thumbnail" file
+  "thumbnail" file,
+  "date_uploaded" datetime
 );
 
-ALTER TABLE "userInfo" ADD FOREIGN KEY ("id") REFERENCES "user" ("base_info");
+ALTER TABLE "userInfo" ADD FOREIGN KEY ("id") REFERENCES "client" ("base_info");
 
 ALTER TABLE "userInfo" ADD FOREIGN KEY ("id") REFERENCES "designer" ("base_info");
 
-ALTER TABLE "user" ADD FOREIGN KEY ("id") REFERENCES "design" ("client");
+ALTER TABLE "client" ADD FOREIGN KEY ("id") REFERENCES "design" ("client");
 
 ALTER TABLE "designer" ADD FOREIGN KEY ("id") REFERENCES "design" ("worker");
-
-ALTER TABLE "imageFile" ADD FOREIGN KEY ("int") REFERENCES "designer" ("profile_picture");
 
 ALTER TABLE "imageFile" ADD FOREIGN KEY ("int") REFERENCES "design" ("input_image");
 
@@ -62,4 +64,4 @@ ALTER TABLE "imageFile" ADD FOREIGN KEY ("int") REFERENCES "design" ("output_ima
 
 ALTER TABLE "design" ADD FOREIGN KEY ("id") REFERENCES "designer" ("projects");
 
-ALTER TABLE "design" ADD FOREIGN KEY ("id") REFERENCES "user" ("projects");
+ALTER TABLE "design" ADD FOREIGN KEY ("id") REFERENCES "client" ("projects");

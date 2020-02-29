@@ -31,12 +31,19 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Django default applications
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Adding project applications
+    'WebApplication.apps.WebApplicationConfig',
+
+    # Third-party packages:
+    'phonenumber_field',
 ]
 
 MIDDLEWARE = [
