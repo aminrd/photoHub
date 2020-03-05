@@ -12,4 +12,4 @@ WebApplication/.idea/
 WebApplication/WebApplication/__pycache__/
 WebApplication/.idea/*
 WebApplication/WebApplication/__pycache__/*
-
+*/__pycache__/*

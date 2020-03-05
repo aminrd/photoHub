@@ -5,6 +5,11 @@ from django.contrib.auth.models import User
 # Third-party libraries
 from phonenumber_field.modelfields import PhoneNumberField
 
+# Image and Thumbnail related libraries
+from io import BytesIO
+from PIL import Image
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
 
 # ==================================================
 # Define User, Client and Designer tables
@@ -20,6 +25,25 @@ class UserInfo(models.Model):
     has_profile_picture = models.BooleanField(default=False)
     profile_picture = models.ImageField(upload_to='profile_images/main/')
     profile_thumbnail = models.ImageField(upload_to='profile_images/thumbnail/')
+
+    def create_thumbnail(self):
+        image = Image.open(self.profile_picture.file)
+        image.thumbnail(size=(100, 100))
+        image_file = BytesIO()
+        image.save(image_file, image.format)
+
+        self.profile_thumbnail.save(
+            self.profile_picture.name + "_thumbnail",
+            InMemoryUploadedFile(
+                image_file,
+                None, '',
+                self.profile_picture.file.content_type,
+                image.size,
+                self.profile_picture.file.charset,
+            ),
+            save=True
+        )
+        return True
 
 
 class Client(UserInfo):
@@ -64,6 +88,32 @@ class Project(models.Model):
 
     output_image = models.ImageField(upload_to='images/outputs/main/', default=None)
     output_image_thumbnail = models.ImageField(upload_to='images/outputs/thumbnail/', default=None)
+
+    def create_thumbnails(self, related_list):
+        # Relate list example: [(self.input_image, self.input_image_thumbnail)]
+        for main_image, thum_image in related_list:
+            image = Image.open(main_image.file)
+
+            w,h = image.size
+            ratio = w / 800
+            image.thumbnail(size=(int(w / ratio), int(h / ratio)))
+
+            image_file = BytesIO()
+            image.save(image_file, image.format)
+
+            thum_image.save(
+                main_image.name + "_thumbnail",
+                InMemoryUploadedFile(
+                    image_file,
+                    None, '',
+                    main_image.file.content_type,
+                    image.size,
+                    main_image.file.charset,
+                ),
+                save=True
+            )
+        return True
+
 
 class AdvancedProject(Project):
     input_image1 = models.ImageField(upload_to='images/inputs/main/', default=None)
