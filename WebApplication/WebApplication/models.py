@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import WebApplication.settings as app_setting
 
 
 # Third-party libraries
@@ -9,6 +10,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from io import BytesIO
 from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
+import os
 
 
 # ==================================================
@@ -76,6 +78,7 @@ class Project(models.Model):
     server = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, related_name='project_server', default=None)
     applicants = models.ManyToManyField(Designer)
 
+    allowed_to_share = models.BooleanField(default=False, blank=True, null=True)
     report_on_portfolio = models.BooleanField(default=True)
     description = models.TextField(max_length=2048, default="")
 
@@ -83,6 +86,7 @@ class Project(models.Model):
     owner_feedback = models.IntegerField(default=None)
     price_spend = models.IntegerField(default=0)
 
+    input_file = models.FileField(upload_to='images/inputs/original_file', default=None)
     input_image = models.ImageField(upload_to='images/inputs/main/', default=None)
     input_image_thumbnail = models.ImageField(upload_to='images/inputs/thumbnail/', default=None)
 
@@ -114,13 +118,39 @@ class Project(models.Model):
             )
         return True
 
+    def clear_disk(self):
+        f_path = os.path.join(app_setting.MEDIA_ROOT, self.input_file)
+        if os.path.isfile(f_path):
+            self.input_file = None
+            os.remove(f_path)
+        return True
 
 class AdvancedProject(Project):
+    input_file1 = models.FileField(upload_to='images/inputs/original_file', default=None)
     input_image1 = models.ImageField(upload_to='images/inputs/main/', default=None)
     input_image1_thumbnail = models.ImageField(upload_to='images/inputs/thumbnail/', default=None)
+
+    input_file2 = models.FileField(upload_to='images/inputs/original_file', default=None)
     input_image2 = models.ImageField(upload_to='images/inputs/main/', default=None)
     input_image2_thumbnail = models.ImageField(upload_to='images/inputs/thumbnail/', default=None)
+
+    input_file3 = models.FileField(upload_to='images/inputs/original_file', default=None)
     input_image3 = models.ImageField(upload_to='images/inputs/main/', default=None)
     input_image3_thumbnail = models.ImageField(upload_to='images/inputs/thumbnail/', default=None)
+
+    input_file4 = models.FileField(upload_to='images/inputs/original_file', default=None)
     input_image4 = models.ImageField(upload_to='images/inputs/main/', default=None)
     input_image4_thumbnail = models.ImageField(upload_to='images/inputs/thumbnail/', default=None)
+
+    def clear_disk(self):
+        f_path1 = os.path.join(app_setting.MEDIA_ROOT, self.input_file1)
+        f_path2 = os.path.join(app_setting.MEDIA_ROOT, self.input_file2)
+        f_path3 = os.path.join(app_setting.MEDIA_ROOT, self.input_file3)
+        f_path4 = os.path.join(app_setting.MEDIA_ROOT, self.input_file4)
+
+        for f_path in (f_path1, f_path2, f_path3, f_path4):
+            if os.path.isfile(f_path):
+                self.input_file = None
+                os.remove(f_path)
+
+        return True
