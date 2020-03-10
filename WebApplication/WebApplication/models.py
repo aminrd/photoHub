@@ -1,3 +1,5 @@
+# Licence: photoHub
+# Written by Amin Aghaee
 from django.db import models
 from django.contrib.auth.models import User
 import WebApplication.settings as app_setting
