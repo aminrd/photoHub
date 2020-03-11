@@ -16,9 +16,9 @@ SECRET_KEY = 'h$@^n4taan(*98ci99k4lmg_igj9efub#z9%o%b@%892jo18(k'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+COMPANY_NAME = 'PhotoHub'
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -53,7 +53,7 @@ ROOT_URLCONF = 'WebApplication.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['./templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

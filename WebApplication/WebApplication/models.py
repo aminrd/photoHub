@@ -1,5 +1,6 @@
 # Licence: photoHub
 # Written by Amin Aghaee
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
 import WebApplication.settings as app_setting
@@ -192,3 +193,12 @@ class AdvancedProject(Project):
 
         self.save()
         return True
+
+
+    # Storing all Payments, refunds and transactions here
+    class Transaction(Project):
+        id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+        transaction_date = models.TimeField(auto_now_add=True)
+        user = models.ForeignKey(UserInfo, on_delete=models.SET_NULL, null=True, default=None)
+        amount = models.IntegerField(default=0)
+        reference = models.CharField(max_length=512, blank=True, null=True, default='')

@@ -18,4 +18,9 @@ from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # User management:
+    path('admin/', admin.site.urls),
+
+    # Project management:
 ]
