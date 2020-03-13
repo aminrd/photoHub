@@ -13,3 +13,6 @@ from django.core.paginator import Paginator
 
 from django.http import HttpResponse
 from django.template import Context
+
+def base(request):
+    return render(request, 'base.html')

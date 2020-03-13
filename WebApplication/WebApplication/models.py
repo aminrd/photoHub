@@ -196,7 +196,7 @@ class AdvancedProject(Project):
 
 
     # Storing all Payments, refunds and transactions here
-    class Transaction(Project):
+    class Transaction(models.Model):
         id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
         transaction_date = models.TimeField(auto_now_add=True)
         user = models.ForeignKey(UserInfo, on_delete=models.SET_NULL, null=True, default=None)

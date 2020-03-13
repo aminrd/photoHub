@@ -20,7 +20,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # User management:
-    path('admin/', admin.site.urls),
+    path('base/', views.base),
 
     # Project management:
 ]
