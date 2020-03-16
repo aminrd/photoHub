@@ -14,14 +14,11 @@ from io import BytesIO
 from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import os
-import statistics
-
 
 
 # ==================================================
 # Define User, Client and Designer tables
 # ==================================================
-
 # Django default user fields: username, first_name, last_name, email, password, date_joined
 class UserInfo(models.Model):
     default_user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
@@ -104,7 +101,6 @@ class Designer(UserInfo):
         return rate_list[lvl-1]
 
 
-
 # ==================================================
 # Define User, Client and Designer tables
 # ==================================================
@@ -148,7 +144,7 @@ class Project(models.Model):
             value = value - self.owner_feedback
         self.save()
         self.server.update_avg_feedback()
-        return (0, "Successful")
+        return 0, "Successful"
 
     def create_thumbnails(self, related_list):
         # Relate list example: [(self.input_image, self.input_image_thumbnail)]
@@ -271,6 +267,7 @@ class AdvancedProject(Project):
         self.save()
         return True
 
+
 # ==================================================
 # Storing all Payments, refunds and transactions here
 # ==================================================
@@ -280,6 +277,7 @@ class Transaction(models.Model):
     user = models.ForeignKey(UserInfo, on_delete=models.SET_NULL, null=True, default=None)
     amount = models.IntegerField(default=0)
     reference = models.CharField(max_length=512, blank=True, null=True, default='')
+
 
 class ProjectTransaction(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
