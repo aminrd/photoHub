@@ -1,0 +1,42 @@
+
+========================
+(clients)
+========================
+-- Finished projects
+
+-- Requests
+---- Post new request
+---- My requests
+
+-- Editors
+
+-- Profile
+
+-- Balance (charge)
+
+
+
+
+
+
+========================
+(Editors)
+========================
+-- Finished projects
+
+
+-- Requests
+---- My todo list
+---- Open Requests
+
+
+
+-- Editors
+
+-- Profile
+---- View profile
+---- Edit profile
+---- Manage portfolio
+
+
+-- Balance (re-imberse)
