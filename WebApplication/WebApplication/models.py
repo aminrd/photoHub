@@ -16,6 +16,8 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 import os
 import statistics
 
+
+
 # ==================================================
 # Define User, Client and Designer tables
 # ==================================================
@@ -50,6 +52,11 @@ class UserInfo(models.Model):
         )
         return True
 
+    def charge(self, amount):
+        amount = int(amount)
+        self.credit = self.credit + amount
+        self.save()
+
 
 class Client(UserInfo):
     # List of projects: client_project <list>
@@ -59,10 +66,10 @@ class Client(UserInfo):
 class Designer(UserInfo):
     score = models.IntegerField(default=0)
     avg_feedback = models.DecimalField(max_digits=3, decimal_places=1, default=0.0)
-    rate = models.IntegerField(default=1)
+    rate = models.IntegerField(default=100)
 
     # Public profile visible to all people
-    user_plus = models.IntegerField(default=False)
+    user_plus = models.BooleanField(default=False)
     user_plus_expires = models.DateTimeField(auto_now_add=True)
 
     # User links for user_plus only:
@@ -78,6 +85,24 @@ class Designer(UserInfo):
             self.avg_feedback = sum(plist) / len(plist)
         self.save()
 
+    # From 1 to 5
+    def get_level(self):
+        lvl = [100, 250, 500, 1000, 2000]
+        level = 0
+        for i in range(len(lvl)):
+            if self.score >= lvl[i]:
+                level += 1
+        return level
+
+    def get_rate(self):
+        lvl = self.get_level()
+
+        if self.user_plus or lvl >= 5:
+            return self.rate
+
+        rate_list = [0, 10, 20, 50, 100]
+        return rate_list[lvl-1]
+
 
 
 # ==================================================
@@ -87,7 +112,7 @@ class Project(models.Model):
 
     PROJECT_STATUS = [
         ("open", 'Open'),
-        ("progress", 'Sophomore'),
+        ("progress", 'Already Assigned'),
         ("finished", 'Finished'),
     ]
 
@@ -107,6 +132,7 @@ class Project(models.Model):
 
     # Could be None, 1,2,3,4,5
     owner_feedback = models.IntegerField(default=None)
+    owner_feedback_text = models.TextField(max_length=512, blank=True, null=True, default='')
     price_spend = models.IntegerField(default=0)
 
     input_file = models.FileField(upload_to='images/inputs/original_file', default=None)
@@ -122,6 +148,7 @@ class Project(models.Model):
             value = value - self.owner_feedback
         self.save()
         self.server.update_avg_feedback()
+        return (0, "Successful")
 
     def create_thumbnails(self, related_list):
         # Relate list example: [(self.input_image, self.input_image_thumbnail)]
@@ -155,6 +182,56 @@ class Project(models.Model):
             os.remove(f_path)
         self.save()
         return True
+
+    def add_applicant(self, designer):
+        if not isinstance(designer, Designer):
+            return 1, "Only designers can apply"
+
+        if self.status != 'open':
+            return 1, "This project is not open"
+
+        if any(x.id == designer.id for x in self.applicants.all()):
+            return 1, "Already applied"
+
+        self.applicants.add(designer)
+        self.save()
+        return 0, "Successful"
+
+    def approve_designer(self, designer):
+        if not isinstance(designer, Designer):
+            return 1, "Candidate should be a designer"
+
+        if not self.server or self.server is not None:
+            return 1, "Already has a candidate"
+
+        if self.client.credit < designer.get_rate():
+            return 2, "You need to charge your account to approve this designer. Please check your balance."
+
+        self.server = designer
+        self.status = 'progress'
+        self.save()
+
+        # TODO: Notify designer that he/she is approved
+        r = designer.get_rate()
+        self.client.charge(-r)
+        self.server.charge((4*r)//5)
+        return 0, "Successful"
+
+    def is_visible(self, visitor):
+        if self.allowed_to_share:
+            return True
+
+        if not isinstance(visitor, UserInfo):
+            return False
+
+        if isinstance(visitor, Client) and visitor.id == self.client.id:
+            return True
+
+        if isinstance(visitor, Designer):
+            if self.status == "open" or (self.status == 'progress' and visitor.id == self.server.id):
+                return True
+
+        return False
 
 
 class AdvancedProject(Project):
@@ -194,11 +271,18 @@ class AdvancedProject(Project):
         self.save()
         return True
 
+# ==================================================
+# Storing all Payments, refunds and transactions here
+# ==================================================
+class Transaction(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    transaction_date = models.TimeField(auto_now_add=True)
+    user = models.ForeignKey(UserInfo, on_delete=models.SET_NULL, null=True, default=None)
+    amount = models.IntegerField(default=0)
+    reference = models.CharField(max_length=512, blank=True, null=True, default='')
 
-    # Storing all Payments, refunds and transactions here
-    class Transaction(models.Model):
-        id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-        transaction_date = models.TimeField(auto_now_add=True)
-        user = models.ForeignKey(UserInfo, on_delete=models.SET_NULL, null=True, default=None)
-        amount = models.IntegerField(default=0)
-        reference = models.CharField(max_length=512, blank=True, null=True, default='')
+class ProjectTransaction(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    transaction_date = models.TimeField(auto_now_add=True)
+    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, default=None)
+    company_benefit = models.IntegerField(default=0)

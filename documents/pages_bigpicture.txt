@@ -12,11 +12,7 @@
 
 -- Profile
 
--- Balance (charge)
-
-
-
-
+-- Balance
 
 
 ========================
@@ -24,12 +20,9 @@
 ========================
 -- Finished projects
 
-
 -- Requests
 ---- My todo list
 ---- Open Requests
-
-
 
 -- Editors
 
@@ -39,4 +32,13 @@
 ---- Manage portfolio
 
 
--- Balance (re-imberse)
+-- Balance
+---- Add coins
+---- Withdraw coins
+
+
+========================
+(Share)
+========================
+About
+License
