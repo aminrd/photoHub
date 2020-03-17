@@ -211,6 +211,10 @@ class Project(models.Model):
         r = designer.get_rate()
         self.client.charge(-r)
         self.server.charge((4*r)//5)
+
+        self.server.score += 25
+        self.server.save()
+
         return 0, "Successful"
 
     def is_visible(self, visitor):
