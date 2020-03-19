@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block STYLESHEETS %}
+    <link href={% static "lib/image-slider/css/twentytwenty.css" %} rel="stylesheet">
+{% endblock %}
+
+{% block MAIN_CONTENT %}
+      <section class="wrapper site-min-height">
+        <h3><i class="fa fa-angle-right"></i> List of public projects</h3>
+        <div class="row mt">
+          <div class="col-lg-12">
+            <!-- /row - THIRD ROW OF PANELS -->
+            <!--  FOURTH ROW OF PANELS -->
+            <!--  FIFTH ROW OF PANELS -->
+            <div class="row">
+
+
+              <div class="col-lg-4 col-md-4 col-sm-4 mb">
+                <div class="content-panel pn">
+                    <div class="twentytwenty-container">
+                      <img src={% static 'lib/image-slider/img/after.png' %} class="img-circle" width="80">
+                      <img src={% static 'lib/image-slider/img/before.png' %} class="img-circle" width="80">
+                    </div>
+                  <div class="pr2-social centered">
+                    <a href="#"><i class="fa fa-twitter"></i></a>
+                    <a href="#"><i class="fas fas-facebook"></i></a>
+                    <a href="#"><i class="fas fas-dribbble"></i></a>
+                  </div>
+                </div>
+
+                <!-- /panel -->
+              </div>
+              <!--/ col-md-4 -->
+            </div>
+            <!-- /row FIFTH ROW OF PANELS -->
+            <!--  SIXTH ROW OF PANELS -->
+            <!-- Product Panel -->
+            <!--  END SIXTH ROW OF PANELS -->
+          </div>
+        </div>
+      </section>
+      <!-- /wrapper -->
+{% endblock %}
+
+
+{% block SCRIPTS %}
+<script src={% static "lib/image-slider/js/jquery.event.move.js" %}></script>
+<script src={% static "lib/image-slider/js/jquery.twentytwenty.js" %}></script>
+{% endblock %}
