@@ -4,7 +4,7 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import User
 import WebApplication.settings as app_setting
-from django.contrib.staticfiles.urls import static
+from django.templatetags.static import  static
 
 # Third-party libraries
 from phonenumber_field.modelfields import PhoneNumberField
@@ -54,10 +54,18 @@ class UserInfo(models.Model):
         self.credit = self.credit + amount
         self.save()
 
+    def get_profile(self):
+        return static('img/UserProfileDefault.png')
 
 class Client(UserInfo):
     # List of projects: client_project <list>
     pass
+
+    def get_profile(self):
+        if self.profile_picture is None:
+            return static('img/UserProfileDefault.png')
+        else:
+            return self.profile_picture.url
 
 
 class Designer(UserInfo):
@@ -99,6 +107,12 @@ class Designer(UserInfo):
 
         rate_list = [0, 10, 20, 50, 100]
         return rate_list[lvl-1]
+
+    def get_profile(self):
+        if self.profile_picture is None:
+            return static('img/UserProfileDefault.png')
+        else:
+            return self.profile_picture.url
 
 
 # ==================================================
