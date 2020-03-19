@@ -40,6 +40,13 @@
           <input type="password" class="form-control" name="password" placeholder="Password">
           <label class="checkbox">
 {#            <input type="checkbox" value="remember-me"> Remember me#}
+
+{% if error %}
+            <span class="pull-right">
+            <p data-toggle="modal" class="text-danger">{{ error }}</p>
+            </span>
+          <br>
+{% endif %}
             <span class="pull-right">
             <a data-toggle="modal" href="login.html#myModal"> Forgot Password?</a>
             </span>

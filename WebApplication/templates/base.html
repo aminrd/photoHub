@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+{#{% debug %}#}
 {% load static %}
 
 <head>
@@ -27,6 +28,7 @@
 </head>
 
 <body>
+
   <section id="container">
     <!-- **********************************************************************************************************************************************************
         TOP BAR CONTENT & NOTIFICATIONS
@@ -91,9 +93,21 @@
         <!--  notification end -->
       </div>
       <div class="top-menu">
+          {% if user.is_authenticated %}
         <ul class="nav pull-right top-menu">
-          <li><a class="logout" href="login.html">Logout</a></li>
+          <li><a class="logout" href="javascript:{document.getElementById('Logout').submit()}">Logout</a></li>
+          <form id="Logout" method="POST" action="{% url 'logout' %}">{% csrf_token %}<input type="hidden"/></form>
         </ul>
+
+        {% else %}
+        <ul class="nav pull-right top-menu">
+          <li><a class="logout" href="{% url 'login' %}">login</a></li>
+        </ul>
+
+          {% endif %}
+
+
+
       </div>
     </header>
     <!--header end-->
@@ -108,15 +122,15 @@
         <!-- sidebar menu start-->
         <ul class="sidebar-menu" id="nav-accordion">
           <p class="centered"><a href="profile.html"><img src={% static "img/ui-sam.jpg" %} class="img-circle" width="80"></a></p>
-          <h5 class="centered">Sam Soffes</h5>
+          <h5 class="centered">{{ user.first_name }}</h5>
           <li class="mt">
-            <a class="active" href="index.html">
+            <a {% if SHOWCASE_ACTIVE %}class="active" {% endif %} href="index.html">
               <i class="fa fa-th"></i>
               <span>Showcases</span>
               </a>
           </li>
           <li class="sub-menu">
-            <a href="javascript:;">
+            <a {% if REQUESTS_ACTIVE %}class="active" {% endif %} href="javascript:;">
               <i class="fa fa-edit"></i>
               <span>Requests</span>
               </a>
@@ -171,15 +185,15 @@
         <!-- sidebar menu start-->
         <ul class="sidebar-menu" id="nav-accordion">
           <p class="centered"><a href="profile.html"><img src={% static "img/ui-sam.jpg" %} class="img-circle" width="80"></a></p>
-          <h5 class="centered">Sam Soffes</h5>
+          <h5 class="centered">{{ user.first_name }}</h5>
           <li class="mt">
-            <a href="index.html">
+            <a {% if SHOWCASE_ACTIVE %}class="active" {% endif %} href="index.html">
               <i class="fa fa-th"></i>
               <span>Showcases</span>
               </a>
           </li>
           <li class="sub-menu">
-            <a href="javascript:;" class="active">
+            <a href="javascript:;" {% if REQUESTS_ACTIVE %}class="active" {% endif %}>
               <i class="fa fa-edit"></i>
               <span>Requests</span>
               </a>
@@ -226,15 +240,15 @@
         <!-- sidebar menu start-->
         <ul class="sidebar-menu" id="nav-accordion">
           <p class="centered"><a href="profile.html"><img src={% static "img/ui-sam.jpg" %} class="img-circle" width="80"></a></p>
-          <h5 class="centered">Sam Soffes</h5>
+          <h5 class="centered">Welcome</h5>
           <li class="mt">
-            <a href="index.html">
+            <a {% if SHOWCASE_ACTIVE %}class="active" {% endif %} href="index.html">
               <i class="fa fa-th"></i>
               <span>Showcases</span>
               </a>
           </li>
           <li>
-            <a href="javascript:;" class="active">
+            <a href="/login" class="active">
               <i class="fa fa-sign-in"></i>
               <span>Sign in</span>
               </a>

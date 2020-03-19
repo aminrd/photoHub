@@ -13,6 +13,24 @@ from django.core.paginator import Paginator
 
 from django.http import HttpResponse
 from django.template import Context
+class pageArgs:
+    def __init__(self):
+        self.USER_INFO = None
+
+        # Side bar activation:
+        self.SHOWCASE_ACTIVE = False
+        self.REQUEST_ACTIVE = False
+        self.PROFILE_ACTIVE = False
+        self.EDITORS_ACTIVE = False
+        self.BALANCE_ACTIVE = False
+        self.ABOUTus_ACTIVE = False
+
+
+
+def logout(request):
+    if request.method == 'POST':
+        auth.logout(request)
+        return redirect('home')
 
 def login(request):
     if request.method == 'POST':
@@ -27,7 +45,12 @@ def login(request):
         return render(request, 'login.html')
 
 def home(request):
-    return render(request, 'home.html')
+    parg = pageArgs()
+    parg.USER_INFO = UserInfo.objects.get(default_user=request.user)
+    parg.SHOWCASE_ACTIVE = True
+
+    return render(request, 'home.html', parg.__dict__)
 
 def base(request):
-    return render(request, 'home.html')
+    parg = pageArgs()
+    return render(request, 'home.html', parg.__dict__)
