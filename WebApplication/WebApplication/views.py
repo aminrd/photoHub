@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from django.utils import timezone
 from django.contrib import auth
+import itertools
+
 
 from django.core.files import File
 from django.core.files.base import ContentFile
@@ -48,11 +50,13 @@ def home(request):
     parg = pageArgs()
     parg.USER_INFO = UserInfo.objects.get(default_user=request.user)
     parg.SHOWCASE_ACTIVE = True
+    parg.MAIN_TITLE = 'List of finished designs'
 
     plist = list(Project.objects.all())
-    plist = [plist[0] for x in range(6)]
+    plist = [plist[0] for x in range(10)]
 
-    parg.PLIST = plist
+    iterable = [iter(plist)] * 3
+    parg.PLIST_ROWS = itertools.zip_longest(*iterable, fillvalue=None)
 
     return render(request, 'home.html', parg.__dict__)
 

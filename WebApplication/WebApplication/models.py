@@ -114,6 +114,11 @@ class Designer(UserInfo):
         else:
             return self.profile_picture.url
 
+    def get_profile_thumbnail(self):
+        if self.profile_picture is None:
+            return static('img/UserProfileDefault.png')
+        else:
+            return self.profile_thumbnail.url
 
 # ==================================================
 # Define User, Client and Designer tables

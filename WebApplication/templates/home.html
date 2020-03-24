@@ -2,38 +2,36 @@
 {% load static %}
 {% block STYLESHEETS %}
     <link href={% static "lib/image-slider/css/twentytwenty.css" %} rel="stylesheet">
-    <style>
-    .PROJECT{
-        margin-bottom: 15px;
-        padding-bottom: 15px;
-    }
-    </style>
 {% endblock %}
 
 {% block MAIN_CONTENT %}
       <section class="wrapper site-min-height">
-        <h3><i class="fa fa-angle-right"></i> List of public projects</h3>
+        <h3><i class="fa fa-angle-right"></i> {{ MAIN_TITLE }}</h3>
         <div class="row mt">
           <div class="col-lg-12">
             <!-- /row - THIRD ROW OF PANELS -->
             <!--  FOURTH ROW OF PANELS -->
             <!--  FIFTH ROW OF PANELS -->
+
+          {% for ROW in PLIST_ROWS %}
             <div class="row">
-                {% for P in PLIST %}
+                {% for P in ROW %}
+
+            {% if P %}
                   <div class="col-lg-4 col-md-4 col-sm-4 mb">
-                    <div class="content-panel pn PROJECT">
+                    <div class="pn">
                         <div class="twentytwenty-container">
-                          <img src="{{ P.input_image.url }}" >
-                          <img src="{{ P.output_image.url }}">
+                          <img src="{{ P.input_image.url }}" style="height: 180px; width: 100%; object-fit: cover;">
+                          <img src="{{ P.output_image.url }}" style="height: 180px; width: 100%; object-fit: cover;">
                         </div>
-                      <div class="pr2-social centered">
+                      <div class="mt centered">
                       <div class="row">
                       <div class="col-4">
-                                  <img src="{{ P.input_image.url }}" class="rounded-circle" width="50">  {{ P.server.default_user.first_name }}
+                                  <img src="{{ P.server.get_profile_thumbnail }}" class="rounded-circle" width="30">  {{ P.server.default_user.first_name }}
                       </div>
                       <div class="col-4">
                                   {% for r in P.get_feedback_range %}
-                                    <i class="fas fa-star fa-10x text-warning"></i>
+                                    <i class="fas fa-star fa-xs text-info" style="font-size: small;"></i>
                                   {% endfor %}
                       </div>
                       <div class="col-4">
@@ -45,8 +43,11 @@
                     <!-- /panel -->
                   </div>
                   <!--/ col-md-4 -->
+            {% endif %}
+
             {% endfor %}
             </div>
+          {% endfor %}
             <!-- /row FIFTH ROW OF PANELS -->
             <!--  SIXTH ROW OF PANELS -->
             <!-- Product Panel -->
