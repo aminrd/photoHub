@@ -7,6 +7,11 @@ WebApplication/pyEnv/
 WebApplication/pyEnv*
 WebApplication/pyEnv
 
+
+WebApplication/media/
+WebApplication/media*
+WebApplication/media
+
 # Excluding pycharm and python cache files
 WebApplication/.idea/
 WebApplication/WebApplication/__pycache__/
