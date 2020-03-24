@@ -143,7 +143,7 @@ class Project(models.Model):
     # Could be None, 1,2,3,4,5
     owner_feedback = models.IntegerField(default=None)
     owner_feedback_text = models.TextField(max_length=512, blank=True, null=True, default='')
-    price_spend = models.IntegerField(default=0)
+    price_spend = models.IntegerField(default=1)
 
     input_file = models.FileField(upload_to='images/inputs/original_file', default=None)
     input_image = models.ImageField(upload_to='images/inputs/main/', default=None)
@@ -159,6 +159,9 @@ class Project(models.Model):
         self.save()
         self.server.update_avg_feedback()
         return 0, "Successful"
+
+    def get_feedback_range(self):
+        return range(self.owner_feedback)
 
     def create_thumbnails(self, related_list):
         # Relate list example: [(self.input_image, self.input_image_thumbnail)]

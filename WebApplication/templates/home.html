@@ -13,23 +13,33 @@
             <!--  FOURTH ROW OF PANELS -->
             <!--  FIFTH ROW OF PANELS -->
             <div class="row">
-
-              <div class="col-lg-4 col-md-4 col-sm-4 mb">
-                <div class="content-panel pn">
-                    <div class="twentytwenty-container">
-                      <img src={% static 'lib/image-slider/img/after.png' %} class="img-circle" width="80">
-                      <img src={% static 'lib/image-slider/img/before.png' %} class="img-circle" width="80">
+                {% for P in PLIST %}
+                  <div class="col-lg-4 col-md-4 col-sm-4 mb">
+                    <div class="content-panel pn">
+                        <div class="twentytwenty-container">
+                          <img src="{{ P.input_image.url }}" >
+                          <img src="{{ P.output_image.url }}">
+                        </div>
+                      <div class="pr2-social centered">
+                      <div class="row">
+                      <div class="col-4">
+                                  Edited by: <img src="{{ P.input_image.url }}" class="rounded-circle" width="50">  {{ P.server.name }}
+                      </div>
+                      <div class="col-4">
+                                  {% for r in P.get_feedback_range %}
+                                    <i class="fa fa-star text-warning"></i>
+                                  {% endfor %}
+                      </div>
+                      <div class="col-4">
+                                  Link to project
+                      </div>
+                      </div>
+                      </div>
                     </div>
-                  <div class="pr2-social centered">
-                    <a href="#"><i class="fa fa-twitter"></i></a>
-                    <a href="#"><i class="fas fas-facebook"></i></a>
-                    <a href="#"><i class="fas fas-dribbble"></i></a>
+                    <!-- /panel -->
                   </div>
-                </div>
-
-                <!-- /panel -->
-              </div>
-              <!--/ col-md-4 -->
+                  <!--/ col-md-4 -->
+            {% endfor %}
             </div>
             <!-- /row FIFTH ROW OF PANELS -->
             <!--  SIXTH ROW OF PANELS -->
@@ -45,4 +55,5 @@
 {% block SCRIPTS %}
 <script src={% static "lib/image-slider/js/jquery.event.move.js" %}></script>
 <script src={% static "lib/image-slider/js/jquery.twentytwenty.js" %}></script>
+<script>$(function(){$(".twentytwenty-container").twentytwenty();});</script>
 {% endblock %}

@@ -20,10 +20,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout'),
-    path('/', views.home, name='home'),
+    path('', views.home, name='home'),
 
     # User management:
     path('base/', views.base),
 
     # Project management:
 ]
+
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
