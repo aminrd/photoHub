@@ -49,6 +49,7 @@ def login(request):
 def home(request):
     parg = pageArgs()
     parg.USER_INFO = UserInfo.objects.get(default_user=request.user)
+    print(type(parg.USER_INFO))
     parg.SHOWCASE_ACTIVE = True
     parg.MAIN_TITLE = 'List of finished designs'
 

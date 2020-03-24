@@ -55,17 +55,20 @@ class UserInfo(models.Model):
         self.save()
 
     def get_profile(self):
-        return static('img/UserProfileDefault.png')
+        if self.has_profile_picture and self.profile_picture is not None:
+            return self.profile_picture.url
+        else:
+            return static('img/UserProfileDefault.png')
+
+    def get_profile_thumbnail(self):
+        if self.has_profile_picture and self.profile_thumbnail is not None:
+            return self.profile_thumbnail.url
+        else:
+            return static('img/UserProfileDefault.png')
 
 class Client(UserInfo):
     # List of projects: client_project <list>
     pass
-
-    def get_profile(self):
-        if self.profile_picture is None:
-            return static('img/UserProfileDefault.png')
-        else:
-            return self.profile_picture.url
 
 
 class Designer(UserInfo):
@@ -109,16 +112,20 @@ class Designer(UserInfo):
         return rate_list[lvl-1]
 
     def get_profile(self):
-        if self.profile_picture is None:
-            return static('img/UserProfileDefault.png')
-        else:
+        if self.user_plus and self.has_profile_picture and self.profile_picture is not None:
             return self.profile_picture.url
+        else:
+            lvl = self.get_level()
+            default_addr = f'images/EditorLevels/Level{lvl}.png'
+            return static(default_addr)
 
     def get_profile_thumbnail(self):
-        if self.profile_picture is None:
-            return static('img/UserProfileDefault.png')
-        else:
+        if self.user_plus and self.has_profile_picture and self.profile_thumbnail is not None:
             return self.profile_thumbnail.url
+        else:
+            lvl = self.get_level()
+            default_addr = f'images/EditorLevels/Level{lvl}.png'
+            return static(default_addr)
 
 # ==================================================
 # Define User, Client and Designer tables
