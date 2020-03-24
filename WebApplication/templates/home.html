@@ -2,6 +2,12 @@
 {% load static %}
 {% block STYLESHEETS %}
     <link href={% static "lib/image-slider/css/twentytwenty.css" %} rel="stylesheet">
+    <style>
+    .PROJECT{
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+    }
+    </style>
 {% endblock %}
 
 {% block MAIN_CONTENT %}
@@ -15,7 +21,7 @@
             <div class="row">
                 {% for P in PLIST %}
                   <div class="col-lg-4 col-md-4 col-sm-4 mb">
-                    <div class="content-panel pn">
+                    <div class="content-panel pn PROJECT">
                         <div class="twentytwenty-container">
                           <img src="{{ P.input_image.url }}" >
                           <img src="{{ P.output_image.url }}">
@@ -23,11 +29,11 @@
                       <div class="pr2-social centered">
                       <div class="row">
                       <div class="col-4">
-                                  Edited by: <img src="{{ P.input_image.url }}" class="rounded-circle" width="50">  {{ P.server.name }}
+                                  <img src="{{ P.input_image.url }}" class="rounded-circle" width="50">  {{ P.server.default_user.first_name }}
                       </div>
                       <div class="col-4">
                                   {% for r in P.get_feedback_range %}
-                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fas fa-star fa-10x text-warning"></i>
                                   {% endfor %}
                       </div>
                       <div class="col-4">

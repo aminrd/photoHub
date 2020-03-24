@@ -49,7 +49,9 @@ def home(request):
     parg.USER_INFO = UserInfo.objects.get(default_user=request.user)
     parg.SHOWCASE_ACTIVE = True
 
-    plist = Project.objects.all()
+    plist = list(Project.objects.all())
+    plist = [plist[0] for x in range(6)]
+
     parg.PLIST = plist
 
     return render(request, 'home.html', parg.__dict__)
