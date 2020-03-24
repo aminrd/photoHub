@@ -48,8 +48,17 @@ def login(request):
 
 def home(request):
     parg = pageArgs()
-    parg.USER_INFO = UserInfo.objects.get(default_user=request.user)
-    print(type(parg.USER_INFO))
+
+    ulist = list(Designer.objects.filter(default_user=request.user))
+    if len(ulist) > 0:
+        if ulist[0].role == 'designer':
+            user_profile = Designer.objects.get(default_user=request.user)
+        else:
+            user_profile = Client.objects.get(default_user=request.user)
+    else:
+        user_profile = None
+    parg.USER_INFO = user_profile
+
     parg.SHOWCASE_ACTIVE = True
     parg.MAIN_TITLE = 'List of finished designs'
 

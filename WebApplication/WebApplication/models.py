@@ -22,6 +22,7 @@ import os
 # Django default user fields: username, first_name, last_name, email, password, date_joined
 class UserInfo(models.Model):
     default_user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    role = models.CharField(default='user_info', max_length=16)
     phone_number = PhoneNumberField()
     verified = models.BooleanField(default=False)
     credit = models.IntegerField(default=0)
@@ -95,7 +96,7 @@ class Designer(UserInfo):
 
     # From 1 to 5
     def get_level(self):
-        lvl = [100, 250, 500, 1000, 2000]
+        lvl = [0, 100, 250, 500, 1000, 2000]
         level = 0
         for i in range(len(lvl)):
             if self.score >= lvl[i]:
