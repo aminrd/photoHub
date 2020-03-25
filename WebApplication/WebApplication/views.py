@@ -6,6 +6,7 @@ from .models import *
 from django.utils import timezone
 from django.contrib import auth
 import itertools
+import datetime
 
 
 from django.core.files import File
@@ -69,6 +70,30 @@ def home(request):
     parg.PLIST_ROWS = itertools.zip_longest(*iterable, fillvalue=None)
 
     return render(request, 'home.html', parg.__dict__)
+
+def profile(request, user_id):
+    parg = pageArgs()
+
+    ulist = list(Designer.objects.filter(default_user=request.user))
+    if len(ulist) > 0:
+        if ulist[0].role == 'designer':
+            user_profile = Designer.objects.get(default_user=request.user)
+        else:
+            user_profile = Client.objects.get(default_user=request.user)
+    else:
+        user_profile = None
+    parg.USER_INFO = user_profile
+    parg.PROFILE_ACTIVE = True
+
+    user_profile = get_object_or_404(UserInfo, pk=user_id)
+    if user_profile.role == 'designer':
+        user_profile = get_object_or_404(Designer, pk=user_id)
+    else:
+        user_profile = get_object_or_404(Client, pk=user_id)
+    parg.PROFILE = user_profile
+    parg.TODAY = datetime.datetime.utcnow()
+
+    return render(request, 'profile.html', parg.__dict__)
 
 def base(request):
     parg = pageArgs()

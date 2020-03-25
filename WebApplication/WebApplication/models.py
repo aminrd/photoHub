@@ -31,6 +31,9 @@ class UserInfo(models.Model):
     profile_picture = models.ImageField(upload_to='profile_images/main/')
     profile_thumbnail = models.ImageField(upload_to='profile_images/thumbnail/')
 
+    def full_name(self):
+        return " ".join([self.default_user.first_name, self.default_user.last_name])
+
     def create_thumbnail(self):
         image = Image.open(self.profile_picture.file)
         image.thumbnail(size=(100, 100))
@@ -69,7 +72,25 @@ class UserInfo(models.Model):
 
 class Client(UserInfo):
     # List of projects: client_project <list>
-    pass
+    def get_projects(self):
+        return list(self.project_client.all())
+
+    def get_public_projects(self, last_three=True):
+        l = list(self.project_client.all().filter(allowed_to_share=True).order_by('date_created'))
+        if last_three:
+            return l[:3]
+        return l
+
+    def get_feedback(self):
+        l = self.get_projects()
+        if len(l) > 0:
+            return sum(x.owner_feedback for x in l) // len(l)
+        else:
+            return 1
+
+    def get_feedback_range(self):
+        return range(int(self.get_feedback())), (self.get_feedback() - int(self.get_feedback())) > 0.1
+
 
 
 class Designer(UserInfo):
@@ -86,6 +107,12 @@ class Designer(UserInfo):
     instagram_url = models.CharField(max_length=1024, blank=True, null=True, default=None)
     linkedin_url = models.CharField(max_length=1024, blank=True, null=True, default=None)
 
+    def get_feedback(self):
+        return self.avg_feedback
+
+    def get_feedback_range(self):
+        return range(int(self.avg_feedback)) , (self.avg_feedback - int(self.avg_feedback)) > 0.1
+
     def update_avg_feedback(self):
         plist = list(self.project_server.all())
         if len(plist) < 1:
@@ -93,6 +120,15 @@ class Designer(UserInfo):
         else:
             self.avg_feedback = sum(plist) / len(plist)
         self.save()
+
+    def get_projects(self):
+        return list(self.project_server.all())
+
+    def get_public_projects(self, last_three=True):
+        l = list(self.project_server.all().filter(allowed_to_share=True).order_by('date_created'))
+        if last_three:
+            return l[:3]
+        return l
 
     # From 1 to 5
     def get_level(self):
@@ -247,7 +283,7 @@ class Project(models.Model):
 
         return 0, "Successful"
 
-    def is_visible(self, visitor):
+    def is_visible(self, visitor=None):
         if self.allowed_to_share:
             return True
 
