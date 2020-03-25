@@ -106,8 +106,8 @@
                           <ul class="my-friends">
                               {% for opponent in PROFILE.get_opposite_list %}
                             <li>
-                            <a href="/profile/{{ opponent.id }}/">
-                              <div class="friends-pic"><img class="img-circle" width="50" height="50" src="{{ opponent.get_profile_thumbnail }}"></div>
+                            <a href="/profile/{{ opponent.default_user.id }}/">
+                              <div class="friends-pic"><img class="img-circle rounded-circle" width="60" height="60" src="{{ opponent.get_profile_thumbnail }}"></div>
                             </a>
                             </li>
                               {% endfor %}
