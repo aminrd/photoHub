@@ -81,6 +81,11 @@ class Client(UserInfo):
             return l[:3]
         return l
 
+    def get_opposite_list(self, max_length=10):
+        public_list = self.get_public_projects(last_three=False)
+        new_list = [x.server for x in public_list]
+        return new_list[:max_length]
+
     def get_feedback(self):
         l = self.get_projects()
         if len(l) > 0:
@@ -129,6 +134,11 @@ class Designer(UserInfo):
         if last_three:
             return l[:3]
         return l
+
+    def get_opposite_list(self, max_length=10):
+        public_list = self.get_public_projects(last_three=False)
+        new_list = [x.client for x in public_list]
+        return new_list[:max_length]
 
     # From 1 to 5
     def get_level(self):

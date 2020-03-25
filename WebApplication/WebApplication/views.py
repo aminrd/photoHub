@@ -26,7 +26,7 @@ class pageArgs:
         self.PROFILE_ACTIVE = False
         self.EDITORS_ACTIVE = False
         self.BALANCE_ACTIVE = False
-        self.ABOUTus_ACTIVE = False
+        self.ABOUTUS_ACTIVE = False
 
 
 
@@ -91,7 +91,7 @@ def profile(request, user_id):
     else:
         user_profile = get_object_or_404(Client, pk=user_id)
     parg.PROFILE = user_profile
-    parg.TODAY = datetime.datetime.utcnow()
+    parg.TODAY = datetime.datetime.now()
 
     return render(request, 'profile.html', parg.__dict__)
 
