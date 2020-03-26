@@ -12,7 +12,7 @@ import datetime
 from django.core.files import File
 from django.core.files.base import ContentFile
 from django.core.files.temp import NamedTemporaryFile
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator,  EmptyPage, PageNotAnInteger
 
 from django.http import HttpResponse
 from django.template import Context
@@ -64,10 +64,20 @@ def home(request):
     parg.MAIN_TITLE = 'List of finished designs'
 
     plist = list(Project.objects.all())
-    plist = [plist[0] for x in range(10)]
+    plist = [plist[0] for x in range(100)]
 
-    iterable = [iter(plist)] * 3
+    page = request.GET.get('page', 1)
+    paginator = Paginator(plist, 12)
+    try:
+        plist_paged = paginator.page(page)
+    except PageNotAnInteger:
+        plist_paged = paginator.page(1)
+    except EmptyPage:
+        plist_paged = paginator.page(paginator.num_pages)
+
+    iterable = [iter(plist_paged)] * 3
     parg.PLIST_ROWS = itertools.zip_longest(*iterable, fillvalue=None)
+    parg.PAGINATE = plist_paged
 
     return render(request, 'home.html', parg.__dict__)
 
@@ -94,8 +104,18 @@ def portfolio(request, user_id):
 
     plist = user_profile.get_portfolio()
 
-    iterable = [iter(plist)] * 3
+    page = request.GET.get('page', 1)
+    paginator = Paginator(plist, 12)
+    try:
+        plist_paged = paginator.page(page)
+    except PageNotAnInteger:
+        plist_paged = paginator.page(1)
+    except EmptyPage:
+        plist_paged = paginator.page(paginator.num_pages)
+
+    iterable = [iter(plist_paged)] * 3
     parg.PLIST_ROWS = itertools.zip_longest(*iterable, fillvalue=None)
+    parg.PAGINATE = plist_paged
 
     return render(request, 'home.html', parg.__dict__)
 
