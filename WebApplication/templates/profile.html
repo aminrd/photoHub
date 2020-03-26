@@ -28,9 +28,10 @@
                 <h3>{{ PROFILE.full_name }}</h3>
                 <h6>{% if PROFILE.role == 'client' %} Client {% else %} Editor {% endif %}</h6>
               {% if PROFILE.role == 'designer' %}
-                  <p><strong>{{ PROFILE.default_user.first_name }}</strong> is a <strong>level {{ PROFILE.get_level }}</strong> editor</p>
+                  <p><strong>{{ PROFILE.default_user.first_name }}</strong> is a <strong>level {{ PROFILE.get_level }}</strong> editor and joined PhotoHub on {{ PROFILE.default_user.date_joined }}. {{ PROFILE.default_user.first_name }} has successfuly edited {{ PROFILE.get_projects|length }} so far.
+                  </p>
               {% else %}
-                  <p>Look at all requests <strong>{{ PROFILE.default_user.first_name }}</strong> posted in our website</p>
+                  <p>Look at all requests <strong>{{ PROFILE.default_user.first_name }}</strong> posted in our website. {{ PROFILE.default_user.first_name }} joined PhotoHub on {{ PROFILE.default_user.date_joined }} and got {{ PROFILE.get_projects|length }} edits from our app so far.</p>
               {% endif %}
                 <br>
               {% if PROFILE.role == 'designer' %}
@@ -42,7 +43,14 @@
               <!-- /col-md-4 -->
               <div class="col-md-4 centered">
                 <div class="profile-pic">
-                  <p><img src="{{ PROFILE.get_profile }}" class="img-circle" style="width: 45%; height: auto;"></p>
+                  <p><img src="{{ PROFILE.get_profile }}" class="img-circle" style="width: 35%; height: auto;"></p>
+                    {% if PROFILE.role == 'designer' %}
+                    <p><button class="btn btn-theme02"><i class="fas fa-angle-double-up"></i> LEVEL {{ PROFILE.get_level }} EDITOR</button>
+                        {% if PROFILE.user_plus %}
+                            <button class="btn btn-theme03"><i class="fas fa-plus"></i> USER Plus</button>
+                        {% endif %}
+                        </p>
+                    {% endif %}
                 </div>
               </div>
               <!-- /col-md-4 -->
@@ -52,13 +60,6 @@
           <!-- /col-lg-12 -->
           <div class="col-lg-12 mt">
             <div class="row content-panel">
-              <div class="panel-heading">
-                <ul class="nav nav-tabs nav-justified">
-                  <li class="active">
-                    <a data-toggle="tab" href="#overview">Overview</a>
-                  </li>
-                </ul>
-              </div>
               <!-- /panel-heading -->
               <div class="panel-body">
                 <div class="tab-content">
@@ -82,24 +83,28 @@
                       </div>
                       <!-- /col-md-6 -->
                       <div class="col-md-6 detailed">
-                        <h4>User Stats</h4>
+
+                      {% if PROFILE.role == 'designer' %}
+                        <h4>ACHIEVEMENts</h4>
                         <div class="row centered mt mb">
                           <div class="col-sm-4">
-                            <h1><i class="fa fa-money"></i></h1>
-                            <h3>$22,980</h3>
-                            <h6>LIFETIME EARNINGS</h6>
+                            <h1><i class="fa fa-medal"></i></h1>
+                            <h3>{% for t in PROFILE.get_level_range %} <i class="fas fa-award"></i>{% endfor %}</h3>
+                            <h6>LEVEL UPGRADES</h6>
                           </div>
                           <div class="col-sm-4">
-                            <h1><i class="fa fa-trophy"></i></h1>
-                            <h3>37</h3>
-                            <h6>COMPLETED TASKS</h6>
+                            <h1><i class="fa fa-star text-warning"></i></h1>
+                            <h3>{{ PROFILE.get_feedback }}</h3>
+                            <h6>AVERAGE FEEDBACK</h6>
                           </div>
                           <div class="col-sm-4">
-                            <h1><i class="fa fa-shopping-cart"></i></h1>
-                            <h3>1980</h3>
-                            <h6>ITEMS SOLD</h6>
+                            <h1><i class="fas fa-money-bill-wave"></i></h1>
+                            <h3>{{ PROFILE.get_rate }}</h3>
+                            <h6>RATE PER EDIT</h6>
                           </div>
                         </div>
+                      {% endif %}
+
                         <!-- /row -->
                         <h4>{% if PROFILE.role == 'designer' %}RECENT CLIENTS{% else %}RECENT EDITORS{% endif %}</h4>
                         <div class="row centered mb">
@@ -114,36 +119,30 @@
                           </ul>
                         </div>
                         <!-- /row -->
-                        <h4>Pending Tasks</h4>
+                      {% if PROFILE.role == 'designer' and PROFILE.user_plus%}
+                        <h4>SOCIAL LINKS</h4>
                         <div class="row centered">
                           <div class="col-md-8 col-md-offset-2">
-                            <h5>Dashboard Update (40%)</h5>
-                            <div class="progress">
-                              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
-                                <span class="sr-only">40% Complete (success)</span>
+
+                              <div class="row h5">
+                                  <div class="col-md-4"><i class="fas fa-home fa-2x"></i></div>
+                                  <div class="col-md-8"><a href="{{ PROFILE.homepage_url }}">{{ PROFILE.instagram_url }}</a></div>
                               </div>
-                            </div>
-                            <h5>Unanswered Messages (80%)</h5>
-                            <div class="progress">
-                              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
-                                <span class="sr-only">80% Complete (success)</span>
+
+                              <div class="row h5">
+                                  <div class="col-md-4"><i class="fab fa-instagram-square fa-2x"></i></div>
+                                  <div class="col-md-8"><a href="{{ PROFILE.instagram_url }}">{{ PROFILE.instagram_url }}</a></div>
                               </div>
-                            </div>
-                            <h5>Product Review (60%)</h5>
-                            <div class="progress">
-                              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                                <span class="sr-only">60% Complete (success)</span>
+
+                              <div class="row h5">
+                                  <div class="col-md-4"><i class="fab fa-linkedin fa-2x"></i></div>
+                                  <div class="col-md-8"><a href="{{ PROFILE.linkedin_url }}">{{ PROFILE.instagram_url }}</a></div>
                               </div>
-                            </div>
-                            <h5>Friend Requests (90%)</h5>
-                            <div class="progress">
-                              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 90%">
-                                <span class="sr-only">90% Complete (success)</span>
-                              </div>
-                            </div>
                           </div>
                           <!-- /col-md-8 -->
                         </div>
+
+                      {% endif %}
                         <!-- /row -->
                       </div>
                       <!-- /col-md-6 -->

@@ -149,6 +149,9 @@ class Designer(UserInfo):
                 level += 1
         return level
 
+    def get_level_range(self):
+        return range(self.get_level())
+
     def get_rate(self):
         lvl = self.get_level()
 
