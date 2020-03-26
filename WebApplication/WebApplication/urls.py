@@ -27,6 +27,8 @@ urlpatterns = [
     path('profile/<int:user_id>/', views.profile),
     path('profile/<int:user_id>/portfolio/', views.portfolio),
 
+    path('editors/', views.editors, name='editors'),
+
     # Project management:
 ]
 

@@ -124,7 +124,7 @@
           <p class="centered"><a href="profile.html"><img src="{{  USER_INFO.get_profile_thumbnail }}" class="img-circle rounded-circle" width="120"></a></p>
           <h5 class="centered">{{ user.first_name }}</h5>
           <li class="mt">
-            <a {% if SHOWCASE_ACTIVE %}class="active" {% endif %} href="index.html">
+            <a {% if SHOWCASE_ACTIVE %}class="active" {% endif %} href="/">
               <i class="fa fa-th"></i>
               <span>Showcases</span>
               </a>
@@ -140,24 +140,24 @@
             </ul>
           </li>
           <li class="sub-menu">
-            <a href="javascript:;">
+            <a href="javascript:;" {% if PROFILE_ACTIVE %}class="active" {% endif %}>
               <i class="far fa-id-card"></i>
               <span>Profile</span>
               </a>
             <ul class="sub">
-              <li><a href="login.html">View profile</a></li>
+              <li><a href="/profile/{{ USER_INFO.default_user.id }}/">View profile</a></li>
               <li><a href="lock_screen.html">Edit profile</a></li>
               <li><a href="profile.html">Manage portfolio</a></li>
             </ul>
           </li>
           <li>
-            <a href="inbox.html">
+            <a href="{% url 'editors' %}" {% if EDITORS_ACTIVE %}class="active" {% endif %}>
               <i class="fas fa-users"></i>
               <span>Editors </span>
               </a>
           </li>
           <li class="sub-menu">
-            <a href="javascript:;">
+            <a href="javascript:;" {% if BALANCE_ACTIVE %}class="active" {% endif %}>
               <i class="fas fa-money-bill-alt"></i>
               <span>Balance</span>
               </a>
@@ -167,7 +167,7 @@
             </ul>
           </li>
           <li class="sub-menu">
-            <a href="javascript:;">
+            <a href="javascript:;" {% if ABOUTUS_ACTIVE %}class="active" {% endif %}>
               <i class="fa fa-book"></i>
               <span>About us</span>
               </a>
@@ -187,7 +187,7 @@
           <p class="centered"><a href="profile.html"><img src="{{ USER_INFO.get_profile }}" class="img-circle rounded-circle" width="80"></a></p>
           <h5 class="centered">{{ user.first_name }}</h5>
           <li class="mt">
-            <a {% if SHOWCASE_ACTIVE %}class="active" {% endif %} href="index.html">
+            <a {% if SHOWCASE_ACTIVE %}class="active" {% endif %} href="/">
               <i class="fa fa-th"></i>
               <span>Showcases</span>
               </a>
@@ -203,25 +203,25 @@
             </ul>
           </li>
           <li>
-            <a href="javascript:;">
+            <a href="javascript:;" {% if PROFILE_ACTIVE %}class="active" {% endif %}>
               <i class="far fa-id-card"></i>
               <span>Profile</span>
               </a>
           </li>
           <li>
-            <a href="inbox.html">
+            <a href="{% url 'editors' %}" {% if EDITORS_ACTIVE %}class="active" {% endif %}>
               <i class="fas fa-users"></i>
               <span>Editors </span>
               </a>
           </li>
           <li>
-            <a href="javascript:;">
+            <a href="javascript:;" {% if BALANCE_ACTIVE %}class="active" {% endif %}>
               <i class="fas fa-money-bill-alt"></i>
               <span>Balance</span>
               </a>
           </li>
           <li class="sub-menu">
-            <a href="javascript:;">
+            <a href="javascript:;" {% if ABOUTUS_ACTIVE %}class="active" {% endif %}>
               <i class="fa fa-book"></i>
               <span>About us</span>
               </a>
@@ -242,19 +242,19 @@
           <p class="centered"><a href="profile.html"><img src="{% static 'img/UserProfileDefault.png' %}" class="img-circle" width="80"></a></p>
           <h5 class="centered">Welcome</h5>
           <li class="mt">
-            <a {% if SHOWCASE_ACTIVE %}class="active" {% endif %} href="index.html">
+            <a {% if SHOWCASE_ACTIVE %}class="active" {% endif %} href="/">
               <i class="fa fa-th"></i>
               <span>Showcases</span>
               </a>
           </li>
           <li>
-            <a href="/login" class="active">
+            <a href="/login" {% if LOGIN_ACTIVE %}class="active" {% endif %}>
               <i class="fa fa-sign-in"></i>
               <span>Sign in</span>
               </a>
           </li>
           <li class="sub-menu">
-            <a href="javascript:;">
+            <a href="javascript:;" {% if SIGNUP_ACTIVE %}class="active" {% endif %}>
               <i class="fa fa-user-plus"></i>
               <span>Sign Up</span>
               </a>
@@ -264,13 +264,13 @@
             </ul>
           </li>
           <li>
-            <a href="inbox.html">
+            <a href="{% url 'editors' %}" {% if EDITORS_ACTIVE %}class="active" {% endif %}>
               <i class="fas fa-users"></i>
               <span>Editors </span>
               </a>
           </li>
           <li class="sub-menu">
-            <a href="javascript:;">
+            <a href="javascript:;" {% if ABOUTUS_ACTIVE %}class="active" {% endif %}>
               <i class="fa fa-book"></i>
               <span>About us</span>
               </a>

@@ -61,7 +61,7 @@ def home(request):
     parg.USER_INFO = user_profile
 
     parg.SHOWCASE_ACTIVE = True
-    parg.MAIN_TITLE = 'List of finished designs'
+    parg.MAIN_TITLE = 'List of public edits'
 
     plist = list(Project.objects.all().filter(allowed_to_share=True).order_by('date_created'))
 
@@ -151,3 +151,39 @@ def profile(request, user_id):
 def base(request):
     parg = pageArgs()
     return render(request, 'home.html', parg.__dict__)
+
+
+
+def editors(request):
+    parg = pageArgs()
+
+    ulist = list(Designer.objects.filter(default_user=request.user))
+    if len(ulist) > 0:
+        if ulist[0].role == 'designer':
+            user_profile = Designer.objects.get(default_user=request.user)
+        else:
+            user_profile = Client.objects.get(default_user=request.user)
+    else:
+        user_profile = None
+    parg.USER_INFO = user_profile
+
+    parg.SHOWCASE_ACTIVE = True
+    parg.MAIN_TITLE = 'List of public edits'
+
+    editors = list(Designer.objects.all())
+    editors = sorted(editors, key=lambda x: x.default_user.date_joined)
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(editors, 12)
+    try:
+        plist_paged = paginator.page(page)
+    except PageNotAnInteger:
+        plist_paged = paginator.page(1)
+    except EmptyPage:
+        plist_paged = paginator.page(paginator.num_pages)
+
+    iterable = [iter(plist_paged)] * 3
+    parg.EDITORS_ROWS = itertools.zip_longest(*iterable, fillvalue=None)
+    parg.PAGINATE = plist_paged
+
+    return render(request, 'editors.html', parg.__dict__)
