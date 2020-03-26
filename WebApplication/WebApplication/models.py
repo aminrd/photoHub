@@ -83,7 +83,8 @@ class Client(UserInfo):
 
     def get_portfolio(self):
         l = self.get_public_projects(last_three=False)
-        return list(x for x in l if x.report_on_portfolio)
+        l = list(x for x in l if x.report_on_portfolio)
+        return sorted(l, key=lambda x: x.owner_feedback)
 
     def get_opposite_list(self, max_length=10):
         public_list = self.get_public_projects(last_three=False)
@@ -141,7 +142,8 @@ class Designer(UserInfo):
 
     def get_portfolio(self):
         l = self.get_public_projects(last_three=False)
-        return list(x for x in l if x.report_on_portfolio)
+        l = list(x for x in l if x.report_on_portfolio)
+        return sorted(l, key=lambda x: x.owner_feedback)
 
     def get_opposite_list(self, max_length=10):
         public_list = self.get_public_projects(last_three=False)

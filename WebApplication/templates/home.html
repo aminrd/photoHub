@@ -25,9 +25,14 @@
                           <img src="{{ P.output_image.url }}" style="height: 180px; width: 100%; object-fit: cover;">
                         </div>
                       <div class="mt centered">
+                      <div class="row text-light" style="margin-top: -40px !important; padding-bottom: 20px !important;">
+                          <div class="col-4">Editor</div>
+                          <div class="col-4">Score</div>
+                          <div class="col-4">Open this edit</div>
+                      </div>
                       <div class="row">
                       <div class="col-4">
-                            <a href="/profile/{{ P.server.default_user.id }}/"> <img src="{{ P.server.get_profile_thumbnail }}" class="rounded-circle" width="50" style="margin-top: -25px !important;">
+                           <a href="/profile/{{ P.server.default_user.id }}/"> <img src="{{ P.server.get_profile_thumbnail }}" class="rounded-circle" width="40" style="margin-top: -10px !important;">
                                 {{ P.server.default_user.first_name }}</a>
                       </div>
                       <div class="col-4">
@@ -36,7 +41,7 @@
                                   {% endfor %}
                       </div>
                       <div class="col-4">
-                                  Link to project
+                                  <i class="fas fa-external-link-square-alt fa-2x text-info"></i>
                       </div>
                       </div>
                       </div>

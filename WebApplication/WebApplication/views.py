@@ -63,8 +63,7 @@ def home(request):
     parg.SHOWCASE_ACTIVE = True
     parg.MAIN_TITLE = 'List of finished designs'
 
-    plist = list(Project.objects.all())
-    plist = [plist[0] for x in range(100)]
+    plist = list(Project.objects.all().filter(allowed_to_share=True).order_by('date_created'))
 
     page = request.GET.get('page', 1)
     paginator = Paginator(plist, 12)
@@ -116,6 +115,11 @@ def portfolio(request, user_id):
     iterable = [iter(plist_paged)] * 3
     parg.PLIST_ROWS = itertools.zip_longest(*iterable, fillvalue=None)
     parg.PAGINATE = plist_paged
+
+    if user_profile.role == 'designer':
+        parg.MAIN_TITLE = f'Portfolio of {user_profile.default_user.first_name}'
+    else:
+        parg.MAIN_TITLE = f'Look at all edits {user_profile.default_user.first_name} got from our app'
 
     return render(request, 'home.html', parg.__dict__)
 
