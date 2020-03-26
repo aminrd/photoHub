@@ -25,6 +25,7 @@ urlpatterns = [
     # User management:
     path('base/', views.base),
     path('profile/<int:user_id>/', views.profile),
+    path('profile/<int:user_id>/portfolio/', views.portfolio),
 
     # Project management:
 ]

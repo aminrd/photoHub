@@ -91,7 +91,11 @@ def portfolio(request, user_id):
     else:
         user_profile = get_object_or_404(Client, pk=user_id)
     parg.PROFILE = user_profile
-    parg.TODAY = datetime.datetime.now()
+
+    plist = user_profile.get_portfolio()
+
+    iterable = [iter(plist)] * 3
+    parg.PLIST_ROWS = itertools.zip_longest(*iterable, fillvalue=None)
 
     return render(request, 'home.html', parg.__dict__)
 

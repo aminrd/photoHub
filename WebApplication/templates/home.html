@@ -27,7 +27,8 @@
                       <div class="mt centered">
                       <div class="row">
                       <div class="col-4">
-                                  <img src="{{ P.server.get_profile_thumbnail }}" class="rounded-circle" width="55" style="margin-top: -25px !important;">  {{ P.server.default_user.first_name }}
+                            <a href="/profile/{{ P.server.default_user.id }}/"> <img src="{{ P.server.get_profile_thumbnail }}" class="rounded-circle" width="50" style="margin-top: -25px !important;">
+                                {{ P.server.default_user.first_name }}</a>
                       </div>
                       <div class="col-4">
                                   {% for r in P.get_feedback_range %}

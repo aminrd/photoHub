@@ -81,6 +81,10 @@ class Client(UserInfo):
             return l[:3]
         return l
 
+    def get_portfolio(self):
+        l = self.get_public_projects(last_three=False)
+        return list(x for x in l if x.report_on_portfolio)
+
     def get_opposite_list(self, max_length=10):
         public_list = self.get_public_projects(last_three=False)
         new_list = [x.server for x in public_list]
@@ -134,6 +138,10 @@ class Designer(UserInfo):
         if last_three:
             return l[:3]
         return l
+
+    def get_portfolio(self):
+        l = self.get_public_projects(last_three=False)
+        return list(x for x in l if x.report_on_portfolio)
 
     def get_opposite_list(self, max_length=10):
         public_list = self.get_public_projects(last_three=False)
