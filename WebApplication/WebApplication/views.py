@@ -167,11 +167,11 @@ def editors(request):
         user_profile = None
     parg.USER_INFO = user_profile
 
-    parg.SHOWCASE_ACTIVE = True
+    parg.EDITORS_ACTIVE = True
     parg.MAIN_TITLE = 'List of public edits'
 
     editors = list(Designer.objects.all())
-    editors = sorted(editors, key=lambda x: x.default_user.date_joined)
+    editors = sorted(editors, key=lambda x: x.default_user.date_joined, reverse=True)
 
     page = request.GET.get('page', 1)
     paginator = Paginator(editors, 12)
@@ -182,8 +182,6 @@ def editors(request):
     except EmptyPage:
         plist_paged = paginator.page(paginator.num_pages)
 
-    iterable = [iter(plist_paged)] * 3
-    parg.EDITORS_ROWS = itertools.zip_longest(*iterable, fillvalue=None)
     parg.PAGINATE = plist_paged
 
     return render(request, 'editors.html', parg.__dict__)
