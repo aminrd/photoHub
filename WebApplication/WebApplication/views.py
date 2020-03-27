@@ -93,14 +93,52 @@ def todo_list(request):
         return HttpResponseForbidden()
 
     parg.USER_INFO = user_profile
-    parg.REQUEST_ACTIVE = True
+    parg.REQUESTS_ACTIVE = True
 
     plist = Project.objects.all().filter(server=user_profile).filter(status='progress').order_by('target_deadline')
-    #plist = list( x for x in plist if x.days_remaining() >= 0 )
+    plist = list( x for x in plist if x.days_remaining() >= 0 )
     parg.PLIST = plist
 
     return render(request, 'todo.html', parg.__dict__)
 
+
+def requests(request):
+    if request.method == 'GET':
+        parg = pageArgs()
+        parg.REQUESTS_ACTIVE = True
+
+
+        if request.GET.get('pid', -1) < 0:
+            # Open Requests -- showing all requests to designers only
+            ulist = list(Designer.objects.filter(default_user=request.user))
+            if len(ulist) > 0:
+                if ulist[0].role == 'designer':
+                    user_profile = Designer.objects.get(default_user=request.user)
+                else:
+                    return HttpResponseForbidden()
+            else:
+                return HttpResponseForbidden()
+
+            parg.USER_INFO = user_profile
+
+            plist = Project.objects.all().filter(status='open').order_by('target_deadline')
+            plist = list( x for x in plist if x.days_remaining() >= 0 )
+            print(plist)
+
+            page = request.GET.get('page', 1)
+            paginator = Paginator(plist, 12)
+            try:
+                plist_paged = paginator.page(page)
+            except PageNotAnInteger:
+                plist_paged = paginator.page(1)
+            except EmptyPage:
+                plist_paged = paginator.page(paginator.num_pages)
+
+            iterable = [iter(plist_paged)] * 3
+            parg.PLIST_ROWS = itertools.zip_longest(*iterable, fillvalue=None)
+            parg.PAGINATE = plist_paged
+
+            return render(request, 'Requests.html', parg.__dict__)
 
 def portfolio(request, user_id):
     parg = pageArgs()

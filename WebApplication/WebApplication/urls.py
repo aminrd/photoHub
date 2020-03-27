@@ -27,6 +27,7 @@ urlpatterns = [
     path('profile/<int:user_id>/', views.profile),
     path('profile/<int:user_id>/portfolio/', views.portfolio),
     path('mytodo/', views.todo_list, name='todo'),
+    path('requests/open/', views.requests),
 
     path('editors/', views.editors, name='editors'),
 

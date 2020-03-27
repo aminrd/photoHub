@@ -5,30 +5,21 @@
 
 {% block MAIN_CONTENT %}
      <section class="wrapper site-min-height">
-        <h3><i class="fa fa-angle-right"></i> Active Editors in PhotoHub</h3>
+        <h3><i class="fa fa-angle-right"></i> Open Requests</h3>
         <hr>
 
-         {% for ROW in EDITORS_ROWS %}
+         {% for ROW in PLIST_ROWS %}
         <div class="row mt">
-        {% for EDITOR in ROW %}
-            {% if EDITOR %}
+        {% for PROJECT in ROW %}
+            {% if PROJECT %}
 
             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 desc">
             <div class="project-wrapper">
               <div class="project">
-                  <div class="row justify-content-center text-secondary" style="margin-bottom: -10px; font-size: medium;">
-                      <div class="col-md-1"> </div>
-                      <div class="col-md-3"><p>{{ EDITOR.default_user.first_name }}</p></div>
-                      <div class="col-md-3"><p><i class="fas fa-angle-double-up"></i> {{ EDITOR.get_level }}</p></div>
-                      <div class="col-md-3"><p>
-                          {% for star in EDITOR.get_feedback_range.0 %}<i class="fas fa-star fa-xs text-warning" ></i>{% endfor %}
-                          {% if EDITOR.get_feedback_range.1 %}<i class="fas fa-star-half fa-xs text-warning" ></i> {% endif %}
-                      </p></div>
-                  </div>
                 <div class="photo-wrapper" >
                   <div class="photo">
                     <a class="fancybox" href="/profile/{{ EDITOR.default_user.id }}/">
-                        <img class="img-responsive" src="{{ EDITOR.get_profile }}" width="400" height="273" alt="{{ EDITOR.default_user.first_name }}-image">
+                        <img class="img-responsive" src="{{ PROJECT.input_image.url }}" width="400" height="273" alt="project-image">
                     </a>
                   </div>
                   <div class="overlay"></div>
