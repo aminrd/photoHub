@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block STYLESHEETS %}
+{% endblock %}
+
+{% block MAIN_CONTENT %}
+     <section class="wrapper site-min-height">
+        <h3><i class="fa fa-angle-right"></i> List of all projects you have done</h3>
+        <hr>
+
+             <table class="table table-striped">
+                      <thead class="thead-dark">
+                        <tr>
+                          <th scope="col">Client</th>
+                          <th scope="col">Before</th>
+                          <th scope="col">After</th>
+                            <th scope="col">Owner Permission</th>
+                            <th scope="col">Share on your profile</th>
+                            <th scope="col"><i class="fas fa-external-link-alt"></i></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for PROJECT in PLIST %}
+                        <tr>
+                          <th scope="row" >
+                              <img class="img-responsive" src="{{ PROJECT.client.get_profile_thumbnail }}" width="60" height="60" alt="{{ PROJECT.client.default_user.first_name }}-image">
+                              {{ PROJECT.client.default_user.first_name }} {{ PROJECT.client.default_user.last_name }}
+                          </th>
+                            <td><img class="img-responsive" src="{{ PROJECT.input_image.url }}" width="200" alt="project-image"></td>
+                            <td><img class="img-responsive" src="{{ PROJECT.output_image.url }}" width="200" alt="project-image"></td>
+
+
+                            <td class="align-middle">
+                                {% if PROJECT.allowed_to_share %}
+                                    <i class="fas fa-times-circle fa-2x text-danger"></i>
+                                {% else %}
+                                    <i class="fas fa-check-circle fa-2x text-success"></i>
+                                {% endif %}
+                            </td>
+
+                            <td class="align-middle">
+                                {% if PROJECT.allowed_to_share %}
+                                    <i class="fas fa-times-circle fa-2x text-danger"></i>
+                                {% else %}
+                                    <i class="fas fa-check-circle fa-2x text-success"></i>
+                                {% endif %}
+                            </td>
+
+                            <td><a href="#">Open project</a></td>
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+             </table>
+
+      </section>
+{% endblock %}
+
+
+{% block SCRIPTS %}
+{% endblock %}

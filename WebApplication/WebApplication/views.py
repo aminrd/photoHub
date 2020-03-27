@@ -102,13 +102,34 @@ def todo_list(request):
     return render(request, 'todo.html', parg.__dict__)
 
 
+def manage_portfolio(request):
+    parg = pageArgs()
+
+    ulist = list(Designer.objects.filter(default_user=request.user))
+    if len(ulist) > 0:
+        if ulist[0].role == 'designer':
+            user_profile = Designer.objects.get(default_user=request.user)
+        else:
+            return HttpResponseForbidden()
+    else:
+        return HttpResponseForbidden()
+
+    parg.USER_INFO = user_profile
+    parg.PROFILE_ACTIVE = True
+
+    plist = Project.objects.all().filter(server=user_profile).filter(status='progress').order_by('target_deadline')
+    parg.PLIST = plist
+
+    return render(request, 'managePortfolio.html', parg.__dict__)
+
 def requests(request):
     if request.method == 'GET':
         parg = pageArgs()
         parg.REQUESTS_ACTIVE = True
 
 
-        if request.GET.get('pid', -1) < 0:
+        PID = int( request.GET.get('pid', -1) )
+        if PID < 0:
             # Open Requests -- showing all requests to designers only
             ulist = list(Designer.objects.filter(default_user=request.user))
             if len(ulist) > 0:
@@ -122,7 +143,7 @@ def requests(request):
             parg.USER_INFO = user_profile
 
             plist = Project.objects.all().filter(status='open').order_by('target_deadline')
-            plist = list( x for x in plist if x.days_remaining() >= 0 )
+            plist = list(x for x in plist if x.days_remaining() >= 0)
             print(plist)
 
             page = request.GET.get('page', 1)
@@ -245,3 +266,5 @@ def editors(request):
     parg.PAGINATE = plist_paged
 
     return render(request, 'editors.html', parg.__dict__)
+
+
