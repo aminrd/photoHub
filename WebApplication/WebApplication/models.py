@@ -13,7 +13,8 @@ from phonenumber_field.modelfields import PhoneNumberField
 from io import BytesIO
 from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
-import os
+import os, datetime
+from django.utils import timezone
 
 
 # ==================================================
@@ -234,6 +235,10 @@ class Project(models.Model):
 
     def get_feedback_range(self):
         return range(self.owner_feedback)
+
+    def days_remaining(self):
+        today =now_aware = timezone.now()
+        return (self.target_deadline - today).days
 
     def create_thumbnails(self, related_list):
         # Relate list example: [(self.input_image, self.input_image_thumbnail)]

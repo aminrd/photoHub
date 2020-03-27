@@ -14,7 +14,7 @@ from django.core.files.base import ContentFile
 from django.core.files.temp import NamedTemporaryFile
 from django.core.paginator import Paginator,  EmptyPage, PageNotAnInteger
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.template import Context
 class pageArgs:
     def __init__(self):
@@ -79,6 +79,28 @@ def home(request):
     parg.PAGINATE = plist_paged
 
     return render(request, 'home.html', parg.__dict__)
+
+def todo_list(request):
+    parg = pageArgs()
+
+    ulist = list(Designer.objects.filter(default_user=request.user))
+    if len(ulist) > 0:
+        if ulist[0].role == 'designer':
+            user_profile = Designer.objects.get(default_user=request.user)
+        else:
+            return HttpResponseForbidden()
+    else:
+        return HttpResponseForbidden()
+
+    parg.USER_INFO = user_profile
+    parg.REQUEST_ACTIVE = True
+
+    plist = Project.objects.all().filter(server=user_profile).filter(status='progress').order_by('target_deadline')
+    #plist = list( x for x in plist if x.days_remaining() >= 0 )
+    parg.PLIST = plist
+
+    return render(request, 'todo.html', parg.__dict__)
+
 
 def portfolio(request, user_id):
     parg = pageArgs()
