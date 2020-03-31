@@ -31,6 +31,8 @@ urlpatterns = [
     path('myportfolio/', views.manage_portfolio, name='manage_portfolio'),
     path('requests/open/', views.requests),
 
+    path('project/<int:project_id>/', views.project_view),
+
     path('editors/', views.editors, name='editors'),
 
     # Project management:

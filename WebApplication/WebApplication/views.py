@@ -229,10 +229,30 @@ def profile(request, user_id):
 
     return render(request, 'profile.html', parg.__dict__)
 
+
+def project_view(request, project_id):
+    parg = pageArgs()
+
+    ulist = list(Designer.objects.filter(default_user=request.user))
+    if len(ulist) > 0:
+        if ulist[0].role == 'designer':
+            user_profile = Designer.objects.get(default_user=request.user)
+        else:
+            user_profile = Client.objects.get(default_user=request.user)
+    else:
+        user_profile = None
+
+    project = get_object_or_404(Project, pk=project_id)
+    if not project.is_visible(user_profile):
+        return HttpResponseForbidden()
+
+    return render(request, 'Project.html', parg.__dict__)
+
+
+
 def base(request):
     parg = pageArgs()
     return render(request, 'home.html', parg.__dict__)
-
 
 
 def editors(request):
