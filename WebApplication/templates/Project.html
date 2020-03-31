@@ -15,11 +15,11 @@
             </div>
             <div class="custom-bar-chart">
                 <div class="twentytwenty-container">
-                          <img src="{{ PROJECT.input_image.url }}" style="height: 350px; width: 100%; object-fit: cover;">
-                          <img src="{{ PROJECT.output_image.url }}" style="height: 350px; width: 100%; object-fit: cover;">
+                          <img src="{{ PROJECT.input_image.url }}" style="height: 450px; width: 100%; object-fit: cover;">
+                          <img src="{{ PROJECT.output_image.url }}" style="height: 450px; width: 100%; object-fit: cover;">
                 </div>
             </div>
-            <div class="row" style="margin-top: 100px;">
+            <div class="row" style="margin-top: 200px;">
               <!-- WEATHER PANEL -->
               <div class="col-md-4 col-sm-4 mb">
                 <div class="darkblue-panel pn">
@@ -27,25 +27,37 @@
                     <h5>Edit deadline</h5>
                   </div>
                   <canvas id="serverstatus02" height="120" width="120"></canvas>
-                  <script>
-                    var doughnutData = [{
-                        value: {{ PROJECT.days_remaining }},
-                        color: "#1c9ca7"
-                      },
-                      {
-                        value: {{ PROJECT.total_days }} - {{ PROJECT.days_remaining }},
-                        color: "#f68275"
-                      }
-                    ];
-                    var myDoughnut = new Chart(document.getElementById("serverstatus02").getContext("2d")).Doughnut(doughnutData);
-                  </script>
+                    {% if PROJECT.days_remaining >= 0%}
+                          <script>
+                            var doughnutData = [{
+                                value: {{ PROJECT.days_remaining }},
+                                color: "#1c9ca7"
+                              },
+                              {
+                                value: {{ PROJECT.total_days }} - {{ PROJECT.days_remaining }},
+                                color: "#f68275"
+                              }
+                            ];
+                            var myDoughnut = new Chart(document.getElementById("serverstatus02").getContext("2d")).Doughnut(doughnutData);
+                          </script>
+                    {% else %}
+                      <script>
+                            var doughnutData = [{
+                                value: 1,
+                                color: "#F88"
+                              }
+                            ];
+                            var myDoughnut = new Chart(document.getElementById("serverstatus02").getContext("2d")).Doughnut(doughnutData);
+                          </script>
+                    {% endif %}
                   <p class="text-warning">{{ PROJECT.target_deadline }}</p>
                   <footer>
                     <div class="pull-left">
+                    {% if PROJECT.days_remaining >= 0%}
                       <h5><i class="fa fa-hdd-o"></i>{{ PROJECT.days_remaining }} days remaining</h5>
-                    </div>
-                    <div class="pull-right">
-                      <h5>60% Used</h5>
+                    {% else %}
+                        <h5><i class="fa fa-hdd-o"></i>Deadline passed</h5>
+                    {% endif %}
                     </div>
                   </footer>
                 </div>
