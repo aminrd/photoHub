@@ -236,6 +236,9 @@ class Project(models.Model):
     def get_feedback_range(self):
         return range(self.owner_feedback)
 
+    def total_days(self):
+        return (self.target_deadline - self.date_created).days
+
     def days_remaining(self):
         today =now_aware = timezone.now()
         return (self.target_deadline - today).days

@@ -241,11 +241,14 @@ def project_view(request, project_id):
             user_profile = Client.objects.get(default_user=request.user)
     else:
         user_profile = None
+    parg.USER_INFO = user_profile
 
     project = get_object_or_404(Project, pk=project_id)
     if not project.is_visible(user_profile):
         return HttpResponseForbidden()
 
+    parg.PROJECT = project
+    parg.REQUESTS_ACTIVE = True
     return render(request, 'Project.html', parg.__dict__)
 
 
