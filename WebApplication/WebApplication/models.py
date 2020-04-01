@@ -276,6 +276,12 @@ class Project(models.Model):
         self.save()
         return True
 
+    def get_applicants(self, max_num=10):
+        applicant_list = list(self.applicants.all())
+        if max_num > 0:
+            return applicant_list[:max_num]
+        return applicant_list
+
     def add_applicant(self, designer):
         if not isinstance(designer, Designer):
             return 1, "Only designers can apply"

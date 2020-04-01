@@ -88,91 +88,40 @@
               </div>
               <!-- /col-md-8  -->
             </div>
-            <div class="row">
-              <!-- TWITTER PANEL -->
-              <div class="col-md-4 mb">
-                <div class="twitter-panel pn">
-                  <i class="fa fa-twitter fa-4x"></i>
-                  <p>Dashio is here! Take a look and enjoy this new Bootstrap Dashboard theme.</p>
-                  <p class="user">@Alvrz_is</p>
-                </div>
-              </div>
-              <!-- /col-md-4 -->
-              <div class="col-md-4 mb">
-                <!-- WHITE PANEL - TOP USER -->
-                <div class="white-panel pn">
-                  <div class="white-header">
-                    <h5>TOP USER</h5>
-                  </div>
-                  <p><img src="img/ui-zac.jpg" class="img-circle" width="50"></p>
-                  <p><b>Zac Snider</b></p>
-                  <div class="row">
-                    <div class="col-md-6">
-                      <p class="small mt">MEMBER SINCE</p>
-                      <p>2012</p>
-                    </div>
-                    <div class="col-md-6">
-                      <p class="small mt">TOTAL SPEND</p>
-                      <p>$ 47,60</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- /col-md-4 -->
-              <div class="col-md-4 mb">
-                <!-- INSTAGRAM PANEL -->
-                <div class="instagram-panel pn">
-                  <i class="fa fa-instagram fa-4x"></i>
-                  <p>@THISISYOU<br/> 5 min. ago
-                  </p>
-                  <p><i class="fa fa-comment"></i> 18 | <i class="fa fa-heart"></i> 49</p>
-                </div>
-              </div>
-              <!-- /col-md-4 -->
-            </div>
-            <!-- /row -->
+
+          {% if user == PROJECT.client.default_user or user == PROJECT.server.default_user %}
             <div class="row">
               <div class="col-lg-4 col-md-4 col-sm-4 mb">
                 <div class="product-panel-2 pn">
-                  <div class="badge badge-hot">HOT</div>
-                  <img src="img/product.jpg" width="200" alt="">
-                  <h5 class="mt">Flat Pack Heritage</h5>
-                  <h6>TOTAL SALES: 1388</h6>
-                  <button class="btn btn-small btn-theme04">FULL REPORT</button>
+                {% if PROJECT.status != 'finished' %}
+                    <div class="badge badge-hot">Final</div>
+                {% endif %}
+                  <i class="fas fa-download fa-8x"></i>
+                  <h5 class="mt">Download edit content</h5>
+                  <h6>TOTAL SIZE: 1388</h6>
+                <a href="#" class="btn btn-small btn-theme04" role="button" aria-pressed="true"><i class="fas fa-download"></i> Download</a>
                 </div>
               </div>
               <!-- /col-md-4 -->
-              <!--  PROFILE 02 PANEL -->
-              <div class="col-lg-4 col-md-4 col-sm-4 mb">
-                <div class="content-panel pn">
-                  <div id="profile-02">
-                    <div class="user">
-                      <img src="img/friends/fr-06.jpg" class="img-circle" width="80">
-                      <h4>DJ SHERMAN</h4>
-                    </div>
-                  </div>
-                  <div class="pr2-social centered">
-                    <a href="#"><i class="fa fa-twitter"></i></a>
-                    <a href="#"><i class="fa fa-facebook"></i></a>
-                    <a href="#"><i class="fa fa-dribbble"></i></a>
-                  </div>
-                </div>
-                <!-- /panel -->
-              </div>
-              <!--/ col-md-4 -->
-              <div class="col-md-4 col-sm-4 mb">
-                <div class="green-panel pn">
-                  <div class="green-header">
-                    <h5>DISK SPACE</h5>
-                  </div>
-                  <canvas id="serverstatus03" height="120" width="120"></canvas>
-                  <h3>60% USED</h3>
-                </div>
-              </div>
+                {% if user == PROJECT.server.default_user and PROJECT.status == 'progress'%}
+                      <div class="col-md-4 col-sm-4 mb">
+                        <div class="green-panel pn">
+                          <div class="green-header">
+                            <h5>Submit</h5>
+                          </div>
+                            <br>
+                        <a href="#" class="btn btn-theme03 btn-xl active" style="margin-bottom: 25px;" role="button" aria-pressed="true"><i class="fas fa-upload"></i> upload panel</a>
+                            <br>
+                          <h3>Upload files</h3>
+                        </div>
+                      </div>
+                {% endif %}
               <!-- /col-md-4 -->
             </div>
+          {% endif %}
             <!-- /row -->
           </div>
+
           <!-- /col-lg-9 END SECTION MIDDLE -->
           <!-- **********************************************************************************************************************************************************
               RIGHT SIDEBAR CONTENT
@@ -196,73 +145,55 @@
                     <div class="btn btn-round btn-primary btn-sm">Finished</div>
                 {% endif %}
             </h4>
-            <!-- RECENT ACTIVITIES SECTION -->
-            <h4 class="centered mt">RECENT ACTIVITY</h4>
-            <!-- First Activity -->
-            <div class="desc">
-              <div class="thumb">
-                <span class="badge bg-theme"><i class="fa fa-clock-o"></i></span>
-              </div>
-              <div class="details">
-                <p>
-                  <muted>Just Now</muted>
-                  <br/>
-                  <a href="#">Paul Rudd</a> purchased an item.<br/>
-                </p>
-              </div>
-            </div>
-            <!-- Second Activity -->
-            <div class="desc">
-              <div class="thumb">
-                <span class="badge bg-theme"><i class="fa fa-clock-o"></i></span>
-              </div>
-              <div class="details">
-                <p>
-                  <muted>2 Minutes Ago</muted>
-                  <br/>
-                  <a href="#">James Brown</a> subscribed to your newsletter.<br/>
-                </p>
-              </div>
-            </div>
-            <!-- Third Activity -->
-            <div class="desc">
-              <div class="thumb">
-                <span class="badge bg-theme"><i class="fa fa-clock-o"></i></span>
-              </div>
-              <div class="details">
-                <p>
-                  <muted>3 Hours Ago</muted>
-                  <br/>
-                  <a href="#">Diana Kennedy</a> purchased a year subscription.<br/>
-                </p>
-              </div>
-            </div>
-            <!-- Fourth Activity -->
-            <div class="desc">
-              <div class="thumb">
-                <span class="badge bg-theme"><i class="fa fa-clock-o"></i></span>
-              </div>
-              <div class="details">
-                <p>
-                  <muted>7 Hours Ago</muted>
-                  <br/>
-                  <a href="#">Brando Page</a> purchased a year subscription.<br/>
-                </p>
-              </div>
-            </div>
-            <!-- CALENDAR-->
-            <div id="calendar" class="mb">
-              <div class="panel green-panel no-margin">
-                <div class="panel-body">
-                  <div id="date-popover" class="popover top" style="cursor: pointer; disadding: block; margin-left: 33%; margin-top: -50px; width: 175px;">
-                    <div class="arrow"></div>
-                    <h3 class="popover-title" style="disadding: none;"></h3>
-                    <div id="date-popover-content" class="popover-content"></div>
+
+          {% if PROJECT.status == 'open' %}
+              <h4 class="centered mt">RECENT APPLICANTS</h4>
+              {% for app in PROJECT.get_applicants %}
+                <div class="desc">
+                  <div class="thumb">
+                    <span class="badge bg-theme"><i class="fa fa-clock-o"></i></span>
                   </div>
-                  <div id="my-calendar"></div>
+                  <div class="details">
+                    <p>
+                      <muted> {% for l in app.get_level_range %}<i class="far fa-circle"></i>{% endfor %}</muted>
+                      <br/>
+                      <a href="/profile/{{ app.default_user.id }}/">{{ app.default_user.first_name }}</a> is ready to edit this photo<br/>
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </div>
+              {% endfor %}
+          {% elif PROJECT.status == 'progress' %}
+              <h4 class="centered mt">EDITOR</h4>
+                <div class="desc">
+                  <div class="thumb">
+                    <span class="badge bg-theme"><i class="fa fa-clock-o"></i></span>
+                  </div>
+                  <div class="details">
+                    <p>
+                      <muted> {% for l in PROJECT.server.get_level_range %}<i class="far fa-circle"></i>{% endfor %}</muted>
+                      <br/>
+                      <a href="/profile/{{ PROJECT.server.default_user.id }}/">{{ PROJECT.server.default_user.first_name }}</a> is editing this photo<br/>
+                    </p>
+                  </div>
+                </div>
+
+          {% elif PROJECT.status == 'finished' %}
+              <h4 class="centered mt">EDITOR</h4>
+                <div class="desc">
+                  <div class="thumb">
+                    <span class="badge bg-theme"><i class="fa fa-clock-o"></i></span>
+                  </div>
+                  <div class="details">
+                    <p>
+                      <muted> {% for l in PROJECT.server.get_level_range %}<i class="far fa-circle"></i>{% endfor %}</muted>
+                      <br/>
+                      <a href="/profile/{{ PROJECT.server.default_user.id }}/">{{ PROJECT.server.default_user.first_name }}</a> edited this photo<br/>
+                    </p>
+                  </div>
+                </div>
+
+          {% endif %}
+
             <!-- / calendar -->
           </div>
           <!-- /col-lg-3 -->
