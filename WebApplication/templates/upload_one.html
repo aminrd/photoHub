@@ -19,8 +19,28 @@
 {% block MAIN_CONTENT %}
       <section class="wrapper site-min-height">
         <h3><i class="fa fa-angle-right"></i> Dropzone File Upload</h3>
-        <div class="row mt justify-content-center">
-              <form action="assets/dropzone/upload.php" class="dropzone needsclick d-block" id="demo-upload">{% csrf_token %}</form>
+        <div class="row mt justify-content-center" id="demo-dropzone">
+            <div id="demo-dropzone">
+              <form action="/fileManager/" class="dropzone needsclick d-block" id="demo-upload">
+                  {% csrf_token %}
+                  <input type="text" id="MODEL_NAME" name="MODELNAME" value="{{ MODEL_NAME }}" class="d-none">
+                  <input type="number" id="MODEL_ID" name="MODEL_ID" value="{{ MODEL_ID }}" class="d-none">
+                  <input type="text" id="FIELD_LNAME" name="FIELD_NAME" value="{{ FIELD_NAME }}" class="d-none">
+              </form>
+                      <div class="dz-message needsclick">
+        Drop files here or click to upload.<br>
+        <span class="note needsclick">
+
+            {% if PURPOSE %}
+                {{ PURPOSE }}
+            {% else %}
+                (This is just a demo dropzone. Selected files are <strong>not</strong> actually uploaded.)
+            {% endif %}
+
+        </span>
+      </div>
+            </div>
+
         </div>
       </section>
 {% endblock %}
