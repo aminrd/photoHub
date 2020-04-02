@@ -285,6 +285,29 @@ def fileManager(request):
         else:
             return HttpResponseForbidden()
 
+    elif request.method == 'GET':
+        parg = pageArgs()
+
+        ulist = list(Designer.objects.filter(default_user=request.user))
+        if len(ulist) > 0:
+            if ulist[0].role == 'designer':
+                user_profile = Designer.objects.get(default_user=request.user)
+            else:
+                user_profile = Client.objects.get(default_user=request.user)
+        else:
+            user_profile = None
+        parg.USER_INFO = user_profile
+
+        # File upload arguments:
+        parg.MODEL_NAME = request.GET.get('MODEL_NAME', 'None')
+        parg.FIELD_NAME = request.GET.get('FIELD_NAME', 'None')
+        parg.MODEL_ID = request.GET.get('MODEL_ID', 0)
+
+        return render(request, 'upload_one.html', parg.__dict__)
+
+    else:
+        return HttpResponseForbidden()
+
 
 def base(request):
     parg = pageArgs()
