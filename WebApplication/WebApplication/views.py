@@ -249,6 +249,42 @@ def project_view(request, project_id):
     return render(request, 'Project.html', parg.__dict__)
 
 
+def fileManager(request):
+    if request.method == 'POST':
+        m_name = request.POST.get('MODEL_NAME', 'None')
+
+        try:
+            m_id = int(request.POST.get('MODEL_ID', -1))
+        except:
+            m_id -1
+
+        m_field = request.POST.get('FIELD_NAME', 'None')
+
+        if m_name.lower() == 'project':
+            project = get_object_or_404(Project, pk=m_id)
+            if m_field.lower() == 'input_file':
+                project.input_file = request.FILES.get('file')
+                project.save()
+
+            elif m_field.lower() == 'output_file':
+                project.output_image = request.FILES.get('file')
+                project.save()
+
+        elif m_name.lower == 'client':
+            client = get_object_or_404(Client, pk=m_id)
+            if m_field.lower() == 'profile_picture':
+                client.profile_picture = request.FILES.get('file')
+                client.save()
+
+        elif m_name.lower == 'designer':
+            designer = get_object_or_404(Designer, pk=m_id)
+            if m_field.lower() == 'profile_picture':
+                designer.profile_picture = request.FILES.get('file')
+                designer.save()
+
+        else:
+            return HttpResponseForbidden()
+
 
 def base(request):
     parg = pageArgs()

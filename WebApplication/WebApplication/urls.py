@@ -34,6 +34,7 @@ urlpatterns = [
     path('project/<int:project_id>/', views.project_view),
 
     path('editors/', views.editors, name='editors'),
+    path('filemanager/', views.fileManager, name='filemanager'),
 
     # Project management:
 ]
