@@ -147,6 +147,16 @@
             </h4>
 
           {% if PROJECT.status == 'open' %}
+              {% if USER_INFO.role == 'designer' and USER_INFO not in PROJECT.applicants.all%}
+              <h4 class="centered mt">
+              <button type="button" class="btn btn-round btn-warning" id="apply">Apply to edit</button>
+                  <form id="application_form" method="POST" action="/project/{{ PROJECT.id }}/">
+                      {% csrf_token %}
+                      <input type="hidden" name="type" value="applicant_form">
+                      <input type="hidden" name="applicant_id" value="{{ USER_INFO.default_user.id }}">
+                  </form>
+              </h4>
+              {% endif %}
               <h4 class="centered mt">RECENT APPLICANTS</h4>
               {% for app in PROJECT.get_applicants %}
                 <div class="desc">
@@ -207,4 +217,49 @@
 <script src={% static "lib/image-slider/js/jquery.event.move.js" %}></script>
 <script src={% static "lib/image-slider/js/jquery.twentytwenty.js" %}></script>
 <script>$(function(){$(".twentytwenty-container").twentytwenty();});</script>
+<script src={% static "lib/sweetalert/sweetalert2.all.min.js" %}></script>
+
+{% if USER_INFO.role == 'designer' and USER_INFO not in PROJECT.applicants.all%}
+<script>
+const swalWithBootstrapButtons = Swal.mixin({
+  customClass: {
+    confirmButton: 'btn btn-success',
+    cancelButton: 'btn btn-danger'
+  },
+  buttonsStyling: false
+});
+
+
+document.getElementById('apply').onclick = function () {
+    swalWithBootstrapButtons.fire({
+      title: 'Are you sure?',
+      text: "You are not able to withdraw from an application",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, continue!',
+      cancelButtonText: 'No, cancel!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.value) {
+          // submit application:
+        swalWithBootstrapButtons.fire(
+          'Submitted',
+          'You have been added to the list',
+          'success'
+        )
+      document.getElementById('application_form').submit();
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire(
+          'Cancelled',
+          'Review other requests',
+          'error'
+        )
+      }
+    });
+}
+</script>
+{% endif %}
 {% endblock %}

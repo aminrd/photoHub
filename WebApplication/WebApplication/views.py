@@ -244,9 +244,26 @@ def project_view(request, project_id):
     if not project.is_visible(user_profile):
         return HttpResponseForbidden()
 
-    parg.PROJECT = project
-    parg.REQUESTS_ACTIVE = True
-    return render(request, 'Project.html', parg.__dict__)
+    if request.method == 'GET':
+        parg.PROJECT = project
+        parg.REQUESTS_ACTIVE = True
+        return render(request, 'Project.html', parg.__dict__)
+
+    elif request.method == 'POST':
+        form_type = request.POST.get('type', 'None')
+
+        # Adding a new applicant to this project:
+        if form_type == 'applicant_form':
+            applicant_id = int(request.POST.get('applicant_id', -1))
+            if applicant_id >= 0 and applicant_id == request.user.id:
+                designer = get_object_or_404(Designer, pk=request.user.id)
+                project.add_applicant(designer)
+                return HttpResponse("Done")
+            else:
+                return HttpResponseForbidden()
+    else:
+        return HttpResponseForbidden()
+
 
 
 def fileManager(request):

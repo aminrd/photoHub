@@ -289,7 +289,7 @@ class Project(models.Model):
         if self.status != 'open':
             return 1, "This project is not open"
 
-        if any(x.id == designer.id for x in self.applicants.all()):
+        if any(x.default_user.id == designer.default_user.id for x in self.applicants.all()):
             return 1, "Already applied"
 
         self.applicants.add(designer)
