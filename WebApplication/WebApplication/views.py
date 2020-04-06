@@ -38,26 +38,35 @@ def logout(request):
 def login(request):
     if request.method == 'POST':
         user = auth.authenticate(username=request.POST['username'], password=request.POST['password'])
+        next = request.POST.get('NEXT', '')
         if user is not None:
             auth.login(request, user)
-            return redirect('home')
+            if next == '':
+                return redirect('home')
+            else:
+                return redirect(next)
 
         else:
             return render(request, 'login.html', {'error': 'Username or Password is incorrect!'})
     else:
-        return render(request, 'login.html')
+        next = request.GET.get('next', '')
+        return render(request, 'login.html', {'NEXT': next})
 
 def home(request):
     parg = pageArgs()
 
-    ulist = list(Designer.objects.filter(default_user=request.user))
-    if len(ulist) > 0:
-        if ulist[0].role == 'designer':
-            user_profile = Designer.objects.get(default_user=request.user)
+    if not request.user.is_anonymous:
+        ulist = list(Designer.objects.filter(default_user=request.user))
+        if len(ulist) > 0:
+            if ulist[0].role == 'designer':
+                user_profile = Designer.objects.get(default_user=request.user)
+            else:
+                user_profile = Client.objects.get(default_user=request.user)
         else:
-            user_profile = Client.objects.get(default_user=request.user)
+            user_profile = None
     else:
         user_profile = None
+
     parg.USER_INFO = user_profile
 
     parg.SHOWCASE_ACTIVE = True
@@ -80,6 +89,8 @@ def home(request):
 
     return render(request, 'home.html', parg.__dict__)
 
+
+@login_required(login_url='/login/')
 def todo_list(request):
     parg = pageArgs()
 
@@ -102,6 +113,7 @@ def todo_list(request):
     return render(request, 'todo.html', parg.__dict__)
 
 
+@login_required(login_url='/login/')
 def manage_portfolio(request):
     parg = pageArgs()
 
@@ -122,6 +134,8 @@ def manage_portfolio(request):
 
     return render(request, 'managePortfolio.html', parg.__dict__)
 
+
+@login_required(login_url='/login/')
 def requests(request):
     if request.method == 'GET':
         parg = pageArgs()
@@ -158,6 +172,8 @@ def requests(request):
 
         return render(request, 'Requests.html', parg.__dict__)
 
+
+@login_required(login_url='/login/')
 def portfolio(request, user_id):
     parg = pageArgs()
 
@@ -202,6 +218,7 @@ def portfolio(request, user_id):
     return render(request, 'home.html', parg.__dict__)
 
 
+@login_required(login_url='/login/')
 def profile(request, user_id):
     parg = pageArgs()
 
@@ -227,6 +244,7 @@ def profile(request, user_id):
     return render(request, 'profile.html', parg.__dict__)
 
 
+@login_required(login_url='/login/')
 def project_view(request, project_id):
     parg = pageArgs()
 
@@ -258,14 +276,14 @@ def project_view(request, project_id):
             if applicant_id >= 0 and applicant_id == request.user.id:
                 designer = get_object_or_404(Designer, pk=request.user.id)
                 project.add_applicant(designer)
-                return HttpResponse("Done")
+                return render(request, 'Project.html', parg.__dict__)
             else:
                 return HttpResponseForbidden()
     else:
         return HttpResponseForbidden()
 
 
-
+@login_required(login_url='/login/')
 def fileManager(request):
     if request.method == 'POST':
         m_name = request.POST.get('MODEL_NAME', 'None')
@@ -331,6 +349,7 @@ def base(request):
     return render(request, 'upload_one.html', parg.__dict__)
 
 
+@login_required(login_url='/login/')
 def editors(request):
     parg = pageArgs()
 
