@@ -36,6 +36,9 @@ urlpatterns = [
     path('editors/', views.editors, name='editors'),
     path('filemanager/', views.fileManager, name='filemanager'),
 
+    path('signup/client/', views.client_signup, name='client_signup'),
+    path('signup/editor/', views.designer_signup, name='designer_signup'),
+
     # Project management:
 ]
 

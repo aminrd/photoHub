@@ -52,6 +52,36 @@ def login(request):
         next = request.GET.get('next', '')
         return render(request, 'login.html', {'NEXT': next})
 
+
+def client_signup(request):
+    parg = pageArgs()
+
+    if request.method == "GET":
+        if request.user.is_anonymous:
+            return render(request, 'signup_client.html')
+        else:
+            parg.EDIT_PROFILE = True
+            ulist = list(Client.objects.filter(default_user=request.user))
+
+            if len(ulist) > 0:
+                if ulist[0].role != 'client':
+                    return HttpResponseForbidden()
+            else:
+                return HttpResponseForbidden()
+
+            parg.USER_INFO = ulist[0]
+            return render(request, 'signup_client.html', parg.__dict__)
+
+
+
+
+
+def designer_signup(request):
+    if request.method == "GET":
+        if request.user.is_anonymous:
+            return render(request, 'signup_editor.html')
+
+
 def home(request):
     parg = pageArgs()
 
