@@ -54,6 +54,7 @@ def login(request):
 
 
 def client_signup(request):
+    #TODO: complete sign up procedure for client and designer
     parg = pageArgs()
 
     if request.method == "GET":
@@ -70,6 +71,7 @@ def client_signup(request):
                 return HttpResponseForbidden()
 
             parg.USER_INFO = ulist[0]
+            parg.PROFILE_ACTIVE = True
             return render(request, 'signup_client.html', parg.__dict__)
 
 
@@ -93,7 +95,43 @@ def designer_signup(request):
                 return HttpResponseForbidden()
 
             parg.USER_INFO = ulist[0]
+            parg.PROFILE_ACTIVE = True
             return render(request, 'signup_editor.html', parg.__dict__)
+
+    elif request.method == 'POST':
+        parg.ERROR = []
+
+        f_name = request.POST.get('first_name', None)
+        if f_name is None:
+            parg.ERROR.append('First name is not provided!')
+
+        l_name = request.POST.get('last_name', None)
+        if l_name is None:
+            parg.ERROR.append('Last name is not provided!')
+
+        if request.user.is_anonymous:
+            email = request.POST.get('email', None)
+            if email is None:
+                parg.ERROR.append('Email address not provided!')
+
+            phone_number = request.POST.get('phone', None)
+            if phone_number is None:
+                parg.ERROR.append('Phone number is not given!')
+
+        if request.FILES and request.FILES['profile']:
+            profile = request.FILES['profile']
+
+        homepage_url = request.POST.get('homepage_url', '')
+        linkedin_url = request.POST.get('linkedin_url', '')
+        instagram_url = request.POST.get('instagram_url', '')
+
+        if len(parg.ERROR) > 0:
+            return render(request, 'signup_editor.html', parg.__dict__)
+
+
+
+    else:
+        return HttpResponseForbidden()
 
 
 def home(request):
@@ -427,3 +465,9 @@ def editors(request):
     return render(request, 'editors.html', parg.__dict__)
 
 
+def handle404(request, exception):
+    return render(request, '400.html', {})
+
+
+def handle500(request):
+    return render(request, '500.html', {})

@@ -156,6 +156,8 @@
                       <input type="hidden" name="applicant_id" value="{{ USER_INFO.default_user.id }}">
                   </form>
               </h4>
+              {% else %}
+                  <h4 class="centered mt text-info">The user is reviewing applicants</h4>
               {% endif %}
               <h4 class="centered mt">RECENT APPLICANTS</h4>
               {% for app in PROJECT.get_applicants %}

@@ -42,5 +42,7 @@ urlpatterns = [
     # Project management:
 ]
 
-
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+handler404 = 'WebApplication.views.handle404'
+handler500 = 'WebApplication.views.handle500'

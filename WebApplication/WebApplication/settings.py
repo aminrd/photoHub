@@ -18,7 +18,7 @@ SECRET_KEY = 'h$@^n4taan(*98ci99k4lmg_igj9efub#z9%o%b@%892jo18(k'
 DEBUG = True
 COMPANY_NAME = 'PhotoHub'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
