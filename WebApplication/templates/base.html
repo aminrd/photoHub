@@ -47,10 +47,7 @@
         <ul class="nav top-menu">
           <!-- notification dropdown start-->
           <li id="header_notification_bar" class="dropdown">
-            <a data-toggle="dropdown" class="dropdown-toggle" href="index.html#">
-              <i class="fas fa-bell"></i>
-              <span class="badge bg-warning">7</span>
-              </a>
+            <a data-toggle="dropdown" class="dropdown-toggle" href="index.html#"><i class="fas fa-bell"></i><span class="badge bg-warning">7</span></a>
             <ul class="dropdown-menu extended notification">
               <div class="notify-arrow notify-arrow-yellow"></div>
               <li>
@@ -164,7 +161,7 @@
               <span>Balance</span>
               </a>
             <ul class="sub">
-              <li><a href="form_component.html">Add coins</a></li>
+              <li><a href={% url 'balance' %}>My Blanace</a></li>
               <li><a href="advanced_form_components.html">Withdraw coins</a></li>
             </ul>
           </li>
@@ -217,7 +214,7 @@
               </a>
           </li>
           <li>
-            <a href="javascript:;" {% if BALANCE_ACTIVE %}class="active" {% endif %}>
+            <a href={% url 'balance' %} {% if BALANCE_ACTIVE %}class="active" {% endif %}>
               <i class="fas fa-money-bill-alt"></i>
               <span>Balance</span>
               </a>
