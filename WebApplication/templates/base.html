@@ -95,19 +95,17 @@
       </div>
       <div class="top-menu">
           {% if user.is_authenticated %}
-        <ul class="nav pull-right top-menu">
+        <ul class="nav float-right top-menu">
           <li><a class="logout" href="javascript:{document.getElementById('Logout').submit()}">Logout</a></li>
           <form id="Logout" method="POST" action="{% url 'logout' %}">{% csrf_token %}<input type="hidden"/></form>
         </ul>
 
         {% else %}
-        <ul class="nav pull-right top-menu">
+        <ul class="nav float-right top-menu">
           <li><a class="logout" href="{% url 'login' %}">login</a></li>
         </ul>
 
           {% endif %}
-
-
 
       </div>
     </header>
