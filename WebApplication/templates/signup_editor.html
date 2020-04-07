@@ -6,71 +6,81 @@
 {% endblock %}
 
 {% block MAIN_CONTENT %}
+
       <section class="wrapper">
-        <h3><i class="fa fa-angle-right"></i> Editor's sign-up form</h3>
+
+        <h3><i class="fa fa-angle-right"></i> Editors sign-up form</h3>
 
         <div class="row mt">
           <div class="col-lg-12">
             <div class="form-panel">
               <form action="#" class="form-horizontal style-form">
 
- <div class="form-group">
-                  <label class="col-sm-2 col-sm-2 control-label">Default</label>
+                <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">First Name</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control">
+                    <input type="text" name="first_name" class="form-control" {% if EDIT_PROFILE %} value="{{ USER_INFO.default_user.first_name }}" {% endif %}>
                   </div>
                 </div>
+
                 <div class="form-group">
-                  <label class="col-sm-2 col-sm-2 control-label">Help text</label>
+                  <label class="col-sm-2 col-sm-2 control-label">Last Name</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control">
-                    <span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>
+                    <input type="text" name="last_name" class="form-control" {% if EDIT_PROFILE %} value="{{ USER_INFO.default_user.last_name }}" {% endif %}>
                   </div>
                 </div>
+
+                {% if EDIT_PROFILE %}
                 <div class="form-group">
-                  <label class="col-sm-2 col-sm-2 control-label">Rounder</label>
-                  <div class="col-sm-10">
-                    <input type="text" class="form-control round-form">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 col-sm-2 control-label">Input focus</label>
-                  <div class="col-sm-10">
-                    <input class="form-control" id="focusedInput" type="text" value="This is focused...">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 col-sm-2 control-label">Disabled</label>
-                  <div class="col-sm-10">
-                    <input class="form-control" id="disabledInput" type="text" placeholder="Disabled input here..." disabled>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 col-sm-2 control-label">Placeholder</label>
-                  <div class="col-sm-10">
-                    <input type="text" class="form-control" placeholder="placeholder">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 col-sm-2 control-label">Password</label>
-                  <div class="col-sm-10">
-                    <input type="password" class="form-control" placeholder="">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-lg-2 col-sm-2 control-label">Static control</label>
+                  <label class="col-lg-2 col-sm-2 control-label">Email Address
+                        {% if USER_INFO.activated %}
+                            <span class="badge bg-success text-light">Active</span>
+                        {% else %}
+                            <span class="badge bg-danger text-light">Not Active</span>
+                        {% endif %}
+                  </label>
                   <div class="col-lg-10">
-                    <p class="form-control-static">email@example.com</p>
+                    <p class="form-control-static">{{ USER_INFO.default_user.email }}</p>
                   </div>
                 </div>
+                <div class="form-group">
+                  <label class="col-lg-2 col-sm-2 control-label">Phone Number
+                        {% if USER_INFO.verified %}
+                            <span class="badge bg-success text-light">Verified</span>
+                        {% else %}
+                            <span class="badge bg-danger text-light">Not Verified</span>
+                        {% endif %}
+                  </label>
+                  <div class="col-lg-10">
+                    <p class="form-control-static">{{ USER_INFO.phone_number }} </p>
+                  </div>
+                </div>
+              {% else %}
+                <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Email address</label>
+                  <div class="col-sm-10">
+                    <input name="email" type="emailt" class="form-control round-form" >
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Phone Number</label>
+                  <div class="col-sm-10">
+                    <input name="phone" type="tel" class="form-control round-form" >
+                  </div>
+                </div>
+              {% endif %}
 
 
                 <div class="form-group last">
-                  <label class="control-label col-md-3">Image Upload</label>
+                  <label class="control-label col-md-3">Profile Picture (optional)</label>
                   <div class="col-md-9">
                     <div class="fileupload fileupload-new" data-provides="fileupload">
                       <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
-                        <img src="{% static 'images/EditorLevels/Level1.png' %}" width="150" height="150" alt="" />
+                          {% if EDIT_PROFILE %}
+                              <img src="{{ USER_INFO.get_profile_thumbnail }}" width="150" height="150" alt="" />
+                          {% else %}
+                            <img src="{% static 'img/UserProfileDefault.png' %}" width="150" height="150" alt="" />
+                          {% endif %}
                       </div>
                       <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"></div>
                       <div>
@@ -83,13 +93,32 @@
                       </div>
                     </div>
                     <span class="label label-info">NOTE!</span>
-                    <span>
-                      Attached image thumbnail is
-                      supported in Latest Firefox, Chrome, Opera,
-                      Safari and Internet Explorer 10 only
-                      </span>
+                    <span>Social links and custom profile pictures are only visible for editors using Editor+ package.</span>
                   </div>
                 </div>
+
+
+                <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label"><i class="fas fa-home fa-2x"></i> Homepage</label>
+                  <div class="col-sm-5">
+                    <input name="homepage" type="url" class="form-control round-form" {% if EDIT_PROFILE %}value="{{ USER_PROFILE.homepage_url }}"{% endif %}>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label"><i class="fab fa-instagram-square fa-2x"></i> Instagram</label>
+                  <div class="col-sm-5">
+                    <input name="instagram" type="url" class="form-control round-form" {% if EDIT_PROFILE %}value="{{ USER_PROFILE.instagram_url }}"{% endif %}>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label"><i class="fab fa-linkedin fa-2x"></i> Linkedin</label>
+                  <div class="col-sm-5">
+                    <input name="linkedin" type="url" class="form-control round-form" {% if EDIT_PROFILE %}value="{{ USER_PROFILE.linkedin_url }}"{% endif %}>
+                  </div>
+                </div>
+
+
+
               </form>
             </div>
             <!-- /form-panel -->
