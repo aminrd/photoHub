@@ -465,6 +465,23 @@ def editors(request):
     return render(request, 'editors.html', parg.__dict__)
 
 
+@login_required(login_url='/login/')
+def activate(request):
+    parg = pageArgs()
+
+    ulist = list(Designer.objects.filter(default_user=request.user))
+    if len(ulist) > 0:
+        if ulist[0].role == 'designer':
+            user_profile = Designer.objects.get(default_user=request.user)
+        else:
+            user_profile = Client.objects.get(default_user=request.user)
+    else:
+        user_profile = None
+    parg.USER_INFO = user_profile
+    parg.PROFILE_ACTIVE = True
+
+    return render(request, 'activation.html', parg.__dict__)
+
 def handle404(request, exception):
     return render(request, '400.html', {})
 

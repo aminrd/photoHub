@@ -38,6 +38,7 @@ urlpatterns = [
 
     path('signup/client/', views.client_signup, name='client_signup'),
     path('signup/editor/', views.designer_signup, name='designer_signup'),
+    path('activate/', views.activate, name='activate'),
 
     # Project management:
 ]

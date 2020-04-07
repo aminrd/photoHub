@@ -148,7 +148,7 @@
               <li><a href={% url 'designer_signup' %}>Edit profile</a></li>
               <li><a href="{% url 'manage_portfolio' %}">Manage portfolio</a></li>
             {% if not USER_INFO.verified or not USER_INFO.activated %}
-                <li><a class="text-warning" href="{% url 'manage_portfolio' %}">Activate your profile</a></li>
+                <li><a class="text-warning" href="{% url 'activate' %}">Activate your profile</a></li>
             {% endif %}
             </ul>
           </li>
