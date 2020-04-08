@@ -18,6 +18,16 @@ from django.utils import timezone
 
 
 # ==================================================
+# Notificatin Management
+# ==================================================
+class Notificatino(models.Model):
+    date_created = models.DateTimeField(auto_now_add=True)
+    read = models.BooleanField(default=False)
+    content = models.TextField(max_length=512)
+    link = models.TextField(max_length=512, default=None)
+
+
+# ==================================================
 # Define User, Client and Designer tables
 # ==================================================
 # Django default user fields: username, first_name, last_name, email, password, date_joined
@@ -25,9 +35,11 @@ class UserInfo(models.Model):
     default_user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     role = models.CharField(default='user_info', max_length=16)
     phone_number = PhoneNumberField()
-    #activated = models.BooleanField(default=False, blank=True, null=True)
+    activated = models.BooleanField(default=False, blank=True, null=True)
     verified = models.BooleanField(default=False)
     credit = models.IntegerField(default=0)
+
+    notifications = models.ManyToManyField(Notificatino)
 
     has_profile_picture = models.BooleanField(default=False)
     profile_picture = models.ImageField(upload_to='profile_images/main/')
