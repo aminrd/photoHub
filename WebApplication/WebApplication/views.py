@@ -9,6 +9,7 @@ import itertools
 import datetime
 
 
+from django.contrib.auth.models import User
 from django.core.files import File
 from django.core.files.base import ContentFile
 from django.core.files.temp import NamedTemporaryFile
@@ -75,15 +76,12 @@ def client_signup(request):
             return render(request, 'signup_client.html', parg.__dict__)
 
 
-
-
-
 def designer_signup(request):
     parg = pageArgs()
 
     if request.method == "GET":
         if request.user.is_anonymous:
-            return render(request, 'signup_client.html')
+            return render(request, 'signup_editor.html')
         else:
             parg.EDIT_PROFILE = True
             ulist = list(Designer.objects.filter(default_user=request.user))
@@ -102,22 +100,33 @@ def designer_signup(request):
         parg.ERROR = []
 
         f_name = request.POST.get('first_name', None)
-        if f_name is None:
+        if f_name is None or len(f_name) < 1:
             parg.ERROR.append('First name is not provided!')
 
         l_name = request.POST.get('last_name', None)
-        if l_name is None:
+        if l_name is None or len(l_name) < 1:
             parg.ERROR.append('Last name is not provided!')
+
+        password = request.POST.get('password', None)
+        password_repeat = request.POST.get('password_repeat', None)
 
         if request.user.is_anonymous:
             email = request.POST.get('email', None)
             if email is None:
                 parg.ERROR.append('Email address not provided!')
+            elif User.objects.filter(email=email).count() > 0:
+                parg.ERROR.append('Email address already exists')
+
+            if password != password_repeat:
+                parg.ERROR.append("Password repeat should be equal to password!")
 
             phone_number = request.POST.get('phone', None)
             if phone_number is None:
                 parg.ERROR.append('Phone number is not given!')
+        else:
+            email = request.user.email
 
+        profile = None
         if request.FILES and request.FILES['profile']:
             profile = request.FILES['profile']
 
@@ -128,7 +137,55 @@ def designer_signup(request):
         if len(parg.ERROR) > 0:
             return render(request, 'signup_editor.html', parg.__dict__)
 
+        user_profile = None
+        if request.user.is_anonymous:
+            try:
+                user = User.objects.create_user(email, email, password)
+                user.save()
+            except Exception as e:
+                parg.ERROR.append(str(e))
+                return render(request, 'signup_editor.html', parg.__dict__)
 
+            auth.authenticate(username=user.username, password=password_repeat)
+
+            user_profile = Designer()
+            user_profile.role = 'designer'
+            user_profile.default_user = user
+        else:
+            ulist = list(Designer.objects.filter(default_user=request.user))
+            if len(ulist) > 0:
+                if ulist[0].role == 'designer':
+                    user_profile = Designer.objects.get(default_user=request.user)
+                else:
+                    return HttpResponseForbidden()
+            else:
+                return HttpResponseForbidden()
+
+            phone_number = user_profile.phone_number
+
+            if len(password_repeat) >= 8:
+                user_profile.default_user.set_password(password_repeat)
+                user_profile.default_user.save()
+
+        user_profile.default_user.first_name = f_name
+        user_profile.default_user.last_name = l_name
+        user_profile.default_user.save()
+
+        user_profile.phone_number = phone_number
+
+        user_profile.linkedin_url = linkedin_url
+        user_profile.instagram_url = instagram_url
+        user_profile.homepage_link = homepage_url
+
+        if profile is not None:
+            user_profile.profile_picture = profile
+            user_profile.has_profile_picture = True
+
+        user_profile.save()
+        user_profile.create_thumbnail()
+        user_profile.save()
+
+        return redirect('home')
 
     else:
         return HttpResponseForbidden()

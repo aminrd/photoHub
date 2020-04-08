@@ -41,7 +41,7 @@
 
                 {% if EDIT_PROFILE %}
                 <div class="form-group">
-                  <label class="col-lg-2 col-sm-2 control-label">Email Address
+                  <label class="col-lg-2 col-sm-2 control-label">Email Address (username)
                         {% if USER_INFO.activated %}
                             <span class="badge bg-success text-light">Active</span>
                         {% else %}
@@ -66,7 +66,7 @@
                 </div>
               {% else %}
                 <div class="form-group">
-                  <label class="col-sm-2 col-sm-2 control-label">Email address</label>
+                  <label class="col-sm-2 col-sm-2 control-label">Email address (username)</label>
                   <div class="col-sm-10">
                     <input name="email" type="emailt" class="form-control round-form" >
                   </div>
@@ -79,6 +79,20 @@
                 </div>
               {% endif %}
 
+
+                <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Password</label>
+                  <div class="col-sm-10">
+                    <input type="password" class="form-control" name="password">
+                    <span class="help-block">Your password can’t be too similar to your other personal information. Your password must contain at least 8 characters. Your password can’t be entirely numeric.</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label">Password repeat</label>
+                  <div class="col-sm-10">
+                    <input type="password" class="form-control" name="password_repeat">
+                  </div>
+                </div>
 
                 <div class="form-group last">
                   <label class="control-label col-md-3">Profile Picture (optional)</label>

@@ -26,6 +26,10 @@ class Notificatino(models.Model):
     content = models.TextField(max_length=512)
     link = models.TextField(max_length=512, default=None)
 
+    def mark_as_read(self):
+        self.read = True
+        self.save()
+
 
 # ==================================================
 # Define User, Client and Designer tables
@@ -42,14 +46,21 @@ class UserInfo(models.Model):
     notifications = models.ManyToManyField(Notificatino)
 
     has_profile_picture = models.BooleanField(default=False)
-    profile_picture = models.ImageField(upload_to='profile_images/main/')
+    profile_picture = models.ImageField(upload_to='profile_images/main/', blank=True, null=True)
     profile_thumbnail = models.ImageField(upload_to='profile_images/thumbnail/', blank=True, null=True)
 
     def full_name(self):
         return " ".join([self.default_user.first_name, self.default_user.last_name])
 
     def create_thumbnail(self):
+        if not self.profile_picture or self.profile_picture is None:
+            return True
+
         image = Image.open(self.profile_picture.file)
+        w, h = image.size
+        crop_size = min(w, h)
+        image = image.crop(((w-crop_size)//2, (h - crop_size)//2, (w + crop_size) // 2, (h+ crop_size) // 2))
+
         image.thumbnail(size=(100, 100))
         image_file = BytesIO()
         image.save(image_file, image.format)
