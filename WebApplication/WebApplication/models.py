@@ -4,7 +4,7 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import User
 import WebApplication.settings as app_setting
-from django.templatetags.static import  static
+from django.templatetags.static import static
 
 # Third-party libraries
 from phonenumber_field.modelfields import PhoneNumberField

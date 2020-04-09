@@ -6,13 +6,13 @@ from .models import *
 from django.utils import timezone
 from django.contrib import auth
 import itertools
-import datetime
-
+import datetime,re
 
 from django.contrib.auth.models import User
 from django.core.files import File
 from django.core.files.base import ContentFile
 from django.core.files.temp import NamedTemporaryFile
+import phonenumber_field.validators as phone_validator
 from django.core.paginator import Paginator,  EmptyPage, PageNotAnInteger
 
 from django.http import HttpResponse, HttpResponseForbidden
@@ -29,6 +29,21 @@ class pageArgs:
         self.BALANCE_ACTIVE = False
         self.ABOUTUS_ACTIVE = False
 
+
+def check_password_stregth(password):
+    if len(password) < 8:
+        return False
+
+    if re.search(r"[A-Z]", password) is None:
+        return False
+
+    if re.search(r"[a-z]", password) is None:
+        return False
+
+    if re.search(r"[0-9]", password) is None:
+        return False
+
+    return True
 
 
 def logout(request):
@@ -120,9 +135,18 @@ def designer_signup(request):
             if password != password_repeat:
                 parg.ERROR.append("Password repeat should be equal to password!")
 
+            if len(password) > 0 and not check_password_stregth(password):
+                parg.ERROR.append("Password is not strength enough! Should be at least 8 characters with a mix of uppercase, lowercase and numbers")
+
             phone_number = request.POST.get('phone', None)
             if phone_number is None:
                 parg.ERROR.append('Phone number is not given!')
+                
+            try:
+                phone_validator.validate_international_phonenumber(phone_number)
+            except:
+                parg.ERROR.append('Phone number is not valid!'
+                                  )
         else:
             email = request.user.email
 
