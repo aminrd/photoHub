@@ -125,6 +125,13 @@ def designer_signup(request):
         password = request.POST.get('password', None)
         password_repeat = request.POST.get('password_repeat', None)
 
+        rate = request.POST.get('rate', None)
+        if rate is not None:
+            try:
+                rate = int(rate)
+            except:
+                rate = None
+
         if request.user.is_anonymous:
             email = request.POST.get('email', None)
             if email is None:
@@ -200,6 +207,9 @@ def designer_signup(request):
         user_profile.linkedin_url = linkedin_url
         user_profile.instagram_url = instagram_url
         user_profile.homepage_link = homepage_url
+
+        if rate is not None:
+            user_profile.rate = rate
 
         if profile is not None:
             user_profile.profile_picture = profile

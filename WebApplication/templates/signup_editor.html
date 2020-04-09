@@ -140,6 +140,26 @@
                   </div>
                 </div>
 
+              {% if USER_INFO %}
+
+                {% if USER_INFO.user_plus or USER_INFO.get_level >= 5 %}
+                <div class="form-group">
+                  <label class="col-sm-2 col-sm-2 control-label"><i class="fas fa-coins fa-2x"></i> Your rate per edit</label>
+                  <div class="col-sm-2">
+                    <input name="rate" type="number" class="form-control round-form" >
+                  </div>
+                </div>
+              {% else %}
+                <div class="form-group">
+                    <label class="h6 col-lg-2 col-sm-2 control-label"><i class="fas fa-coins fa-2x"></i> Your rate per edit
+                        <strong class="badge bg-warning text-light font-weight-bolder">{{ USER_INFO.get_rate }}</strong>
+                  </label>
+
+                </div>
+              {% endif %}
+
+              {% endif %}
+
 
                 <div class="form-group last">
                     <button type="submit" class="btn btn-primary btn-round btn-block">Submit</button>
