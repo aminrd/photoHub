@@ -46,13 +46,25 @@
         <!--  notification start -->
         <ul class="nav top-menu">
           <!-- notification dropdown start-->
+    {% if USER_INFO %}
           <li id="header_notification_bar" class="dropdown">
-            <a data-toggle="dropdown" class="dropdown-toggle" href="index.html#"><i class="fas fa-bell"></i><span class="badge bg-warning">7</span></a>
+            <a data-toggle="dropdown" class="dropdown-toggle" href="index.html#">
+                {% if USER_INFO.get_unread_notifications.count > 0 %}
+                    <i class="fas fa-bell"></i><span class="badge bg-warning">{{ USER_INFO.get_unread_notifications.count }}</span>
+                {% else %}
+                    <i class="fas fa-bell"></i><span class="badge bg-theme">{{ USER_INFO.get_unread_notifications.count }}</span>
+                {% endif %}
+            </a>
             <ul class="dropdown-menu extended notification">
               <div class="notify-arrow notify-arrow-yellow"></div>
               <li>
-                <p class="yellow">You have 7 new notifications</p>
+              {% if USER_INFO.get_unread_notifications.count > 0 %}
+                <p class="yellow">You have {{ USER_INFO.get_unread_notifications.count }} new notifications</p>
+              {% else %}
+                  <p class="green">You have {{ USER_INFO.get_unread_notifications.count }} new notifications</p>
+              {% endif %}
               </li>
+{#            TODO: get_notifications sort by date, show top list#}
               <li>
                 <a href="index.html#">
                   <span class="label label-danger"><i class="fa fa-bolt"></i></span>
@@ -87,6 +99,7 @@
             </ul>
           </li>
           <!-- notification dropdown end -->
+{% endif %}
         </ul>
         <!--  notification end -->
       </div>

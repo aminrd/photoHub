@@ -22,7 +22,7 @@
         <div class="row mt">
           <div class="col-lg-12">
             <div class="form-panel">
-              <form action="#" method="post" class="form-horizontal style-form">{% csrf_token %}
+              <form action="#" method="post" class="form-horizontal style-form" enctype="multipart/form-data">{% csrf_token %}
               {% if EDIT_PROFILE %}<input type="hidden" name="form_flag" value="edit_profile">{% endif %}
 
                 <div class="form-group">
@@ -100,7 +100,7 @@
                     <div class="fileupload fileupload-new" data-provides="fileupload">
                       <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
                           {% if EDIT_PROFILE %}
-                              <img src="{{ USER_INFO.get_profile_thumbnail }}" width="150" height="150" alt="" />
+                              <img src="{{ USER_INFO.profile_thumbnail.url }}" width="150" height="150" alt="" />
                           {% else %}
                             <img src="{% static 'img/UserProfileDefault.png' %}" width="150" height="150" alt="" />
                           {% endif %}
@@ -110,7 +110,7 @@
                         <span class="btn btn-theme02 btn-file">
                           <span class="fileupload-new"><i class="fa fa-paperclip"></i> Select image</span>
                         <span class="fileupload-exists"><i class="fa fa-undo"></i> Change</span>
-                        <input type="file" class="default" name="profile"/>
+                        <input type="file" class="default" name="profile" accept="image/x-png,image/gif,image/jpeg"/>
                         </span>
                         <a href="advanced_form_components.html#" class="btn btn-theme04 fileupload-exists" data-dismiss="fileupload"><i class="fa fa-trash-o"></i> Remove</a>
                       </div>

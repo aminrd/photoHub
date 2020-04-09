@@ -43,7 +43,7 @@ class UserInfo(models.Model):
     verified = models.BooleanField(default=False)
     credit = models.IntegerField(default=0)
 
-    notifications = models.ManyToManyField(Notificatino)
+    notifications = models.ManyToManyField(Notificatino, blank=True)
 
     has_profile_picture = models.BooleanField(default=False)
     profile_picture = models.ImageField(upload_to='profile_images/main/', blank=True, null=True)
@@ -61,18 +61,21 @@ class UserInfo(models.Model):
         crop_size = min(w, h)
         image = image.crop(((w-crop_size)//2, (h - crop_size)//2, (w + crop_size) // 2, (h+ crop_size) // 2))
 
-        image.thumbnail(size=(100, 100))
+        image.thumbnail(size=(256, 256))
         image_file = BytesIO()
-        image.save(image_file, image.format)
+        image.save(image_file, 'JPEG')
+
+        main_name = os.path.basename(self.profile_picture.name)
+        main_name = os.path.splitext(main_name)[0]
 
         self.profile_thumbnail.save(
-            self.profile_picture.name + "_thumbnail",
+            main_name + "_thumbnail.jpg",
             InMemoryUploadedFile(
                 image_file,
                 None, '',
-                self.profile_picture.file.content_type,
+                'image/jpeg',
                 image.size,
-                self.profile_picture.file.charset,
+                None,
             ),
             save=True
         )
@@ -88,6 +91,9 @@ class UserInfo(models.Model):
             return self.profile_picture.url
         else:
             return static('img/UserProfileDefault.png')
+
+    def get_unread_notifications(self):
+        return self.notifications.filter(read=False)
 
     def get_profile_thumbnail(self):
         if self.has_profile_picture and self.profile_thumbnail is not None:
@@ -277,16 +283,19 @@ class Project(models.Model):
             image.thumbnail(size=(int(w / ratio), int(h / ratio)))
 
             image_file = BytesIO()
-            image.save(image_file, image.format)
+            image.save(image_file, 'JPEG')
+
+            main_name = os.path.basename(main_image.name)
+            main_name = os.path.splitext(main_name)[0]
 
             thum_image.save(
-                main_image.name + "_thumbnail",
+                main_name + "_thumbnail.jpeg",
                 InMemoryUploadedFile(
                     image_file,
                     None, '',
-                    main_image.file.content_type,
+                    'image/jpeg',
                     image.size,
-                    main_image.file.charset,
+                    None,
                 ),
                 save=True
             )

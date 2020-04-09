@@ -141,12 +141,12 @@ def designer_signup(request):
             phone_number = request.POST.get('phone', None)
             if phone_number is None:
                 parg.ERROR.append('Phone number is not given!')
-                
+
             try:
                 phone_validator.validate_international_phonenumber(phone_number)
             except:
-                parg.ERROR.append('Phone number is not valid!'
-                                  )
+                parg.ERROR.append('Phone number is not valid!')
+                #TODO: return the current form values in error cases
         else:
             email = request.user.email
 
