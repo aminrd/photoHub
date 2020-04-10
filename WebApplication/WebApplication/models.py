@@ -18,20 +18,6 @@ from django.utils import timezone
 
 
 # ==================================================
-# Notificatin Management
-# ==================================================
-class Notificatino(models.Model):
-    date_created = models.DateTimeField(auto_now_add=True)
-    read = models.BooleanField(default=False)
-    content = models.TextField(max_length=512)
-    link = models.TextField(max_length=512, default=None)
-
-    def mark_as_read(self):
-        self.read = True
-        self.save()
-
-
-# ==================================================
 # Define User, Client and Designer tables
 # ==================================================
 # Django default user fields: username, first_name, last_name, email, password, date_joined
@@ -42,8 +28,6 @@ class UserInfo(models.Model):
     activated = models.BooleanField(default=False, blank=True, null=True)
     verified = models.BooleanField(default=False)
     credit = models.IntegerField(default=0)
-
-    notifications = models.ManyToManyField(Notificatino, blank=True)
 
     has_profile_picture = models.BooleanField(default=False)
     profile_picture = models.ImageField(upload_to='profile_images/main/', blank=True, null=True)
@@ -92,11 +76,17 @@ class UserInfo(models.Model):
         else:
             return static('img/UserProfileDefault.png')
 
+    def get_notifications_l5(self):
+        l = list(self.notification_key.all().order_by('date_created'))
+        return l[:5]
+
+    def get_notifications(self):
+        return self.notification_key.all().order_by('date_created')
+
     def get_unread_notifications(self):
-        return self.notifications.filter(read=False)
+        return self.notification_key.filter(read=False).order_by('date_created')
 
     def get_profile_thumbnail(self):
-        print('salmaaaa --------')
         if self.has_profile_picture and self.profile_thumbnail is not None:
             return self.profile_thumbnail.url
         else:
@@ -426,3 +416,21 @@ class ProjectTransaction(models.Model):
     transaction_date = models.TimeField(auto_now_add=True)
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, default=None)
     company_benefit = models.IntegerField(default=0)
+
+
+class Notification(models.Model):
+    date_created = models.DateTimeField(auto_now_add=True)
+    read = models.BooleanField(default=False)
+    content = models.TextField(max_length=512)
+    link = models.TextField(max_length=512, default=None)
+    related_user = models.ForeignKey(UserInfo, on_delete=models.CASCADE, related_name='notification_key')
+
+    def mark_as_read(self):
+        self.read = True
+        self.save()
+
+    def get_content_short(self):
+        if len(self.content) > 30:
+            return self.content[:30] + "..."
+        else:
+            return self.content

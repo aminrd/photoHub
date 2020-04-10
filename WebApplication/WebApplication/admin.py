@@ -6,4 +6,4 @@ admin.site.register(Client)
 admin.site.register(Designer)
 admin.site.register(Project)
 admin.site.register(AdvancedProject)
-
+admin.site.register(Notification)

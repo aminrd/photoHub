@@ -64,37 +64,15 @@
                   <p class="green">You have {{ USER_INFO.get_unread_notifications.count }} new notifications</p>
               {% endif %}
               </li>
-{#            TODO: get_notifications sort by date, show top list#}
+            {% for notif in USER_INFO.get_notifications_l5 %}
               <li>
-                <a href="index.html#">
-                  <span class="label label-danger"><i class="fa fa-bolt"></i></span>
-                  Server Overloaded.
-                  <span class="small italic">4 mins.</span>
+                <a href="{{ notif.link }}">
+                    {{ notif.get_content_short }}
                   </a>
               </li>
+            {% endfor %}
               <li>
-                <a href="index.html#">
-                  <span class="label label-warning"><i class="fa fa-bell"></i></span>
-                  Memory #2 Not Responding.
-                  <span class="small italic">30 mins.</span>
-                  </a>
-              </li>
-              <li>
-                <a href="index.html#">
-                  <span class="label label-danger"><i class="fa fa-bolt"></i></span>
-                  Disk Space Reached 85%.
-                  <span class="small italic">2 hrs.</span>
-                  </a>
-              </li>
-              <li>
-                <a href="index.html#">
-                  <span class="label label-success"><i class="fa fa-plus"></i></span>
-                  New User Registered.
-                  <span class="small italic">3 hrs.</span>
-                  </a>
-              </li>
-              <li>
-                <a href={% url 'notifications' %}>See all notifications</a>
+                <a class="text-info" href={% url 'notifications' %}><i class="fas fa-chevron-right"></i> See all notifications</a>
               </li>
             </ul>
           </li>

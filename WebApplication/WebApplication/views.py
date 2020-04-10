@@ -693,8 +693,20 @@ def notifications(request):
         else:
             user_profile = Client.objects.get(default_user=request.user)
     else:
-        user_profile = None
+        return HttpResponseForbidden()
+
     parg.USER_INFO = user_profile
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(user_profile.get_notifications(), 50)
+    try:
+        notif_paged = paginator.page(page)
+    except PageNotAnInteger:
+        notif_paged = paginator.page(1)
+    except EmptyPage:
+        notif_paged = paginator.page(paginator.num_pages)
+
+    parg.NOTIF_PAGINATOR = notif_paged
 
     return render(request, 'notifications.html', parg.__dict__)
 
