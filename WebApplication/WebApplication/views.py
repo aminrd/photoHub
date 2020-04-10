@@ -70,7 +70,6 @@ def login(request):
 
 
 def client_signup(request):
-    #TODO: complete sign up procedure for client and designer
     parg = pageArgs()
 
     if request.method == "GET":
@@ -89,6 +88,99 @@ def client_signup(request):
             parg.USER_INFO = ulist[0]
             parg.PROFILE_ACTIVE = True
             return render(request, 'signup_client.html', parg.__dict__)
+
+    elif request.method == 'POST':
+        parg.ERROR = []
+
+        f_name = request.POST.get('first_name', None)
+        if f_name is None or len(f_name) < 1:
+            parg.ERROR.append('First name is not provided!')
+
+        l_name = request.POST.get('last_name', None)
+        if l_name is None or len(l_name) < 1:
+            parg.ERROR.append('Last name is not provided!')
+
+        password = request.POST.get('password', None)
+        password_repeat = request.POST.get('password_repeat', None)
+
+        if request.user.is_anonymous:
+            email = request.POST.get('email', None)
+            if email is None:
+                parg.ERROR.append('Email address not provided!')
+            elif User.objects.filter(email=email).count() > 0:
+                parg.ERROR.append('Email address already exists')
+
+            if password != password_repeat:
+                parg.ERROR.append("Password repeat should be equal to password!")
+
+            if len(password) > 0 and not check_password_stregth(password):
+                parg.ERROR.append("Password is not strength enough! Should be at least 8 characters with a mix of uppercase, lowercase and numbers")
+
+            phone_number = request.POST.get('phone', None)
+            if phone_number is not None:
+                try:
+                    phone_validator.validate_international_phonenumber(phone_number)
+                except:
+                    parg.ERROR.append('Phone number is not valid!')
+        else:
+            email = request.user.email
+
+        profile = None
+        if request.FILES and request.FILES['profile']:
+            profile = request.FILES['profile']
+
+
+        if len(parg.ERROR) > 0:
+            return render(request, 'signup_client.html', parg.__dict__)
+
+        user_profile = None
+        if request.user.is_anonymous:
+            try:
+                user = User.objects.create_user(email, email, password)
+                user.save()
+            except Exception as e:
+                parg.ERROR.append(str(e))
+                return render(request, 'signup_client.html', parg.__dict__)
+
+            auth.authenticate(username=user.username, password=password_repeat)
+
+            user_profile = Client()
+            user_profile.role = 'client'
+            user_profile.default_user = user
+        else:
+            ulist = list(Client.objects.filter(default_user=request.user))
+            if len(ulist) > 0:
+                if ulist[0].role == 'client':
+                    user_profile = Client.objects.get(default_user=request.user)
+                else:
+                    return HttpResponseForbidden()
+            else:
+                return HttpResponseForbidden()
+
+            phone_number = user_profile.phone_number
+
+            if len(password_repeat) >= 8:
+                user_profile.default_user.set_password(password_repeat)
+                user_profile.default_user.save()
+
+        user_profile.default_user.first_name = f_name
+        user_profile.default_user.last_name = l_name
+        user_profile.default_user.save()
+
+        user_profile.phone_number = phone_number
+
+        if profile is not None:
+            user_profile.profile_picture = profile
+            user_profile.has_profile_picture = True
+
+        user_profile.save()
+        user_profile.create_thumbnail()
+        user_profile.save()
+
+        return redirect('login')
+
+    else:
+        return HttpResponseForbidden()
 
 
 def designer_signup(request):
@@ -153,7 +245,6 @@ def designer_signup(request):
                 phone_validator.validate_international_phonenumber(phone_number)
             except:
                 parg.ERROR.append('Phone number is not valid!')
-                #TODO: return the current form values in error cases
         else:
             email = request.user.email
 
@@ -219,7 +310,7 @@ def designer_signup(request):
         user_profile.create_thumbnail()
         user_profile.save()
 
-        return redirect('home')
+        return redirect('login')
 
     else:
         return HttpResponseForbidden()
@@ -229,7 +320,7 @@ def home(request):
     parg = pageArgs()
 
     if not request.user.is_anonymous:
-        ulist = list(Designer.objects.filter(default_user=request.user))
+        ulist = list(UserInfo.objects.filter(default_user=request.user))
         if len(ulist) > 0:
             if ulist[0].role == 'designer':
                 user_profile = Designer.objects.get(default_user=request.user)
@@ -350,7 +441,7 @@ def requests(request):
 def portfolio(request, user_id):
     parg = pageArgs()
 
-    ulist = list(Designer.objects.filter(default_user=request.user))
+    ulist = list(UserInfo.objects.filter(default_user=request.user))
     if len(ulist) > 0:
         if ulist[0].role == 'designer':
             user_profile = Designer.objects.get(default_user=request.user)
@@ -395,7 +486,7 @@ def portfolio(request, user_id):
 def profile(request, user_id):
     parg = pageArgs()
 
-    ulist = list(Designer.objects.filter(default_user=request.user))
+    ulist = list(UserInfo.objects.filter(default_user=request.user))
     if len(ulist) > 0:
         if ulist[0].role == 'designer':
             user_profile = Designer.objects.get(default_user=request.user)
@@ -421,7 +512,7 @@ def profile(request, user_id):
 def project_view(request, project_id):
     parg = pageArgs()
 
-    ulist = list(Designer.objects.filter(default_user=request.user))
+    ulist = list(UserInfo.objects.filter(default_user=request.user))
     if len(ulist) > 0:
         if ulist[0].role == 'designer':
             user_profile = Designer.objects.get(default_user=request.user)
@@ -526,7 +617,7 @@ def base(request):
 def editors(request):
     parg = pageArgs()
 
-    ulist = list(Designer.objects.filter(default_user=request.user))
+    ulist = list(UserInfo.objects.filter(default_user=request.user))
     if len(ulist) > 0:
         if ulist[0].role == 'designer':
             user_profile = Designer.objects.get(default_user=request.user)
@@ -560,7 +651,7 @@ def editors(request):
 def activate(request):
     parg = pageArgs()
 
-    ulist = list(Designer.objects.filter(default_user=request.user))
+    ulist = list(UserInfo.objects.filter(default_user=request.user))
     if len(ulist) > 0:
         if ulist[0].role == 'designer':
             user_profile = Designer.objects.get(default_user=request.user)
@@ -578,7 +669,7 @@ def activate(request):
 def balance(request):
     parg = pageArgs()
 
-    ulist = list(Designer.objects.filter(default_user=request.user))
+    ulist = list(UserInfo.objects.filter(default_user=request.user))
     if len(ulist) > 0:
         if ulist[0].role == 'designer':
             user_profile = Designer.objects.get(default_user=request.user)
@@ -590,6 +681,22 @@ def balance(request):
     parg.BALANCE_ACTIVE = True
 
     return render(request, 'balance.html', parg.__dict__)
+
+@login_required(login_url='/login/')
+def notifications(request):
+    parg = pageArgs()
+
+    ulist = list(UserInfo.objects.filter(default_user=request.user))
+    if len(ulist) > 0:
+        if ulist[0].role == 'designer':
+            user_profile = Designer.objects.get(default_user=request.user)
+        else:
+            user_profile = Client.objects.get(default_user=request.user)
+    else:
+        user_profile = None
+    parg.USER_INFO = user_profile
+
+    return render(request, 'notifications.html', parg.__dict__)
 
 
 def handle404(request, exception):

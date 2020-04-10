@@ -38,7 +38,7 @@ class Notificatino(models.Model):
 class UserInfo(models.Model):
     default_user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     role = models.CharField(default='user_info', max_length=16)
-    phone_number = PhoneNumberField()
+    phone_number = PhoneNumberField(blank=True, null=True)
     activated = models.BooleanField(default=False, blank=True, null=True)
     verified = models.BooleanField(default=False)
     credit = models.IntegerField(default=0)
@@ -96,6 +96,7 @@ class UserInfo(models.Model):
         return self.notifications.filter(read=False)
 
     def get_profile_thumbnail(self):
+        print('salmaaaa --------')
         if self.has_profile_picture and self.profile_thumbnail is not None:
             return self.profile_thumbnail.url
         else:
@@ -131,6 +132,7 @@ class Client(UserInfo):
 
     def get_feedback_range(self):
         return range(int(self.get_feedback())), (self.get_feedback() - int(self.get_feedback())) > 0.1
+
 
 
 

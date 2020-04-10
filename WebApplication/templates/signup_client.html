@@ -52,18 +52,6 @@
                     <p class="form-control-static">{{ USER_INFO.default_user.email }}</p>
                   </div>
                 </div>
-                <div class="form-group">
-                  <label class="col-lg-2 col-sm-2 control-label">Phone Number
-                        {% if USER_INFO.verified %}
-                            <span class="badge bg-success text-light">Verified</span>
-                        {% else %}
-                            <span class="badge bg-danger text-light">Not Verified</span>
-                        {% endif %}
-                  </label>
-                  <div class="col-lg-10">
-                    <p class="form-control-static">{{ USER_INFO.phone_number }} </p>
-                  </div>
-                </div>
               {% else %}
                 <div class="form-group">
                   <label class="col-sm-2 col-sm-2 control-label">Email address (username)</label>
@@ -71,13 +59,14 @@
                     <input name="email" type="emailt" class="form-control round-form" >
                   </div>
                 </div>
+              {% endif %}
+
                 <div class="form-group">
                   <label class="col-sm-2 col-sm-2 control-label">Phone Number</label>
                   <div class="col-sm-10">
-                    <input name="phone" type="tel" class="form-control round-form" >
+                    <input name="phone" type="tel" class="form-control round-form" value="{{ USER_INFO.phone_number }}">
                   </div>
                 </div>
-              {% endif %}
 
 
                 <div class="form-group">

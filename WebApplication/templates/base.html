@@ -94,7 +94,7 @@
                   </a>
               </li>
               <li>
-                <a href="index.html#">See all notifications</a>
+                <a href={% url 'notifications' %}>See all notifications</a>
               </li>
             </ul>
           </li>
@@ -192,11 +192,11 @@
         </ul>
         <!-- sidebar menu end-->
       </div>
-                {% else %}
+        {% else %}
                       <div id="sidebar" class="nav-collapse">
         <!-- sidebar menu start-->
         <ul class="sidebar-menu" id="nav-accordion">
-          <p class="centered"><a href="profile.html"><img src="{{ USER_INFO.get_profile }}" class="img-circle rounded-circle" width="80"></a></p>
+          <p class="centered"><a href="profile.html"><img src="{{ USER_INFO.get_profile_thumbnail }}" class="img-circle rounded-circle" width="80"></a></p>
           <h5 class="centered">{{ user.first_name }}</h5>
           <li class="mt">
             <a {% if SHOWCASE_ACTIVE %}class="active" {% endif %} href="/">
@@ -215,9 +215,9 @@
             </ul>
           </li>
           <li>
-            <a href="javascript:;" {% if PROFILE_ACTIVE %}class="active" {% endif %}>
+            <a href="/profile/{{ user.id }}/" {% if PROFILE_ACTIVE %}class="active" {% endif %}>
               <i class="far fa-id-card"></i>
-              <span>Profile</span>
+              <span> My Profile</span>
               </a>
           </li>
           <li>
