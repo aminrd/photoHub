@@ -192,11 +192,18 @@
               <li><a href="buttons.html">My requests</a></li>
             </ul>
           </li>
-          <li>
-            <a href="/profile/{{ user.id }}/" {% if PROFILE_ACTIVE %}class="active" {% endif %}>
+          <li class="sub-menu">
+            <a href="javascript:;" {% if PROFILE_ACTIVE %}class="active" {% endif %}>
               <i class="far fa-id-card"></i>
-              <span> My Profile</span>
+              <span> Profile</span>
               </a>
+          <ul class="sub">
+              <li><a href="/profile/{{ user.id }}/">My profile</a></li>
+              <li><a href={% url 'client_signup' %}>Edit profile</a></li>
+            {% if not USER_INFO.verified or not USER_INFO.activated %}
+                <li><a class="text-warning" href="{% url 'activate' %}">Activate your profile</a></li>
+            {% endif %}
+          </ul>
           </li>
           <li>
             <a href="{% url 'editors' %}" {% if EDITORS_ACTIVE %}class="active" {% endif %}>
