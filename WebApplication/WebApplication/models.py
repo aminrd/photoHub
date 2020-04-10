@@ -426,8 +426,9 @@ class Notification(models.Model):
     related_user = models.ForeignKey(UserInfo, on_delete=models.CASCADE, related_name='notification_key')
 
     def mark_as_read(self):
-        self.read = True
-        self.save()
+        if not self.read:
+            self.read = True
+            self.save()
 
     def get_content_short(self):
         if len(self.content) > 30:

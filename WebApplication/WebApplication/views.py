@@ -6,7 +6,7 @@ from .models import *
 from django.utils import timezone
 from django.contrib import auth
 import itertools
-import datetime,re
+import datetime, re, json
 
 from django.contrib.auth.models import User
 from django.core.files import File
@@ -695,20 +695,40 @@ def notifications(request):
     else:
         return HttpResponseForbidden()
 
-    parg.USER_INFO = user_profile
+    if request.method == "GET":
+        parg.USER_INFO = user_profile
 
-    page = request.GET.get('page', 1)
-    paginator = Paginator(user_profile.get_notifications(), 50)
-    try:
-        notif_paged = paginator.page(page)
-    except PageNotAnInteger:
-        notif_paged = paginator.page(1)
-    except EmptyPage:
-        notif_paged = paginator.page(paginator.num_pages)
+        page = request.GET.get('page', 1)
+        paginator = Paginator(user_profile.get_notifications(), 50)
+        try:
+            notif_paged = paginator.page(page)
+        except PageNotAnInteger:
+            notif_paged = paginator.page(1)
+        except EmptyPage:
+            notif_paged = paginator.page(paginator.num_pages)
 
-    parg.NOTIF_PAGINATOR = notif_paged
+        parg.NOTIF_PAGINATOR = notif_paged
 
-    return render(request, 'notifications.html', parg.__dict__)
+        return render(request, 'notifications.html', parg.__dict__)
+    else:
+        command = request.POST.get('command', None)
+        if command == 'mark-as-read':
+            items = request.POST.get('items', '[]')
+            items = json.loads(items)
+
+            for notif in items:
+                try:
+                    notif_id = int(notif)
+                    notif_obj = Notification.objects.get(pk=notif_id)
+
+                    if notif_obj.related_user.default_user.id == request.user.id:
+                        notif_obj.mark_as_read()
+
+                except Exception as e:
+                    pass
+
+        return HttpResponse('OK')
+
 
 
 def handle404(request, exception):

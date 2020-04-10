@@ -18,17 +18,18 @@
               <div class="panel-body minimal">
                 <div class="mail-option">
                   <div class="btn-group">
-                    <a data-original-title="Select All" data-placement="top" data-toggle="dropdown" href="#" class="btn mini tooltips">
-                      <i class="far fa-check-square"></i> Select All
-                      </a>
+                <button data-original-title="Select All" class="btn btn-light mini tooltips" id="btn-selection">
+                    <div id="btn-selection-all" class=""><i class="fas fa-check-square"></i> Select All</div>
+                    <div id="btn-selection-none" hidden><i class="far fa-check-square"></i> Unselect All</div>
+                  </button>
                   </div>
                   <div class="btn-group">
-                    <a data-original-title="Mark as Read" data-placement="top" data-toggle="dropdown" href="#" class="btn mini tooltips">
+                    <button data-original-title="Mark as Read" class="btn btn-light mini tooltips" id="mark-as-read">
                       <i class="far fa-envelope-open"></i> Mark as Read
-                      </a>
+                      </button>
                   </div>
                   <div class="btn-group">
-                    <a data-original-title="Refresh" data-placement="top" data-toggle="dropdown" href="#" class="btn mini tooltips">
+                    <a data-original-title="Refresh" href="." class="btn mini tooltips">
                       <i class="fas fa-sync-alt"></i>
                       </a>
                   </div>
@@ -52,7 +53,7 @@
                     {% for notif in NOTIF_PAGINATOR %}
                       <tr {% if not notif.read %} class="unread" {% endif %}>
                         <td class="inbox-small-cells">
-                          <input type="checkbox" class="mail-checkbox" id="notif-{{ notif.id }}">
+                          <input type="checkbox" class="mail-checkbox notif-item" id="notif-{{ notif.id }}">
                         </td>
                         <td class="view-message  dont-show"><a href={{ notif.link }}>Open</a></td>
                         <td class="view-message ">{{ notif.content }}</td>
@@ -71,4 +72,46 @@
 
 
 {% block SCRIPTS %}
+<script>
+var selected = false;
+document.getElementById('btn-selection').onclick = function () {
+    var items = document.getElementsByClassName('notif-item');
+    if(selected){
+        for(let i=0; i<items.length; i++){
+            items[i].checked = true;
+        }
+        selected = false;
+        document.getElementById('btn-selection-all').hidden = true;
+        document.getElementById('btn-selection-none').hidden = false;
+    }else{
+        for(let i=0; i<items.length; i++){
+            items[i].checked = false;
+        }
+        selected = true;
+        document.getElementById('btn-selection-all').hidden = false;
+        document.getElementById('btn-selection-none').hidden = true;
+    }
+}
+
+document.getElementById('mark-as-read').onclick = function () {
+    var items = document.getElementsByClassName('notif-item');
+
+    let selected_list = [];
+    for(let i=0; i<items.length; i++){
+        if(items[i].checked){
+            selected_list.push(items[i].id.substring(6));
+        }
+    }
+      $.ajax({
+          url: "/notifications/",
+          type: "POST",
+          data: {
+              csrfmiddlewaretoken: '{{ csrf_token }}',
+              command: 'mark-as-read',
+              items: JSON.stringify(selected_list),
+          },
+      });
+    location.reload();
+}
+</script>
 {% endblock %}
