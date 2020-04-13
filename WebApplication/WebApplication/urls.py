@@ -32,6 +32,7 @@ urlpatterns = [
     path('mytodo/', views.todo_list, name='todo'),
     path('myportfolio/', views.manage_portfolio, name='manage_portfolio'),
     path('requests/open/', views.requests),
+    path('requests/new/', views.new_request, name='new_request'),
 
     path('project/<int:project_id>/', views.project_view),
 

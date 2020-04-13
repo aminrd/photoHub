@@ -438,6 +438,27 @@ def requests(request):
 
 
 @login_required(login_url='/login/')
+def new_request(request):
+    if request.method == 'GET':
+        parg = pageArgs()
+        parg.REQUESTS_ACTIVE = True
+
+        # Open Requests -- showing all requests to designers only
+        ulist = list(Client.objects.filter(default_user=request.user))
+        if len(ulist) > 0:
+            if ulist[0].role == 'client':
+                user_profile = Client.objects.get(default_user=request.user)
+            else:
+                return HttpResponseForbidden()
+        else:
+            return HttpResponseForbidden()
+
+        parg.USER_INFO = user_profile
+
+        return render(request, 'new_request.html', parg.__dict__)
+
+
+@login_required(login_url='/login/')
 def portfolio(request, user_id):
     parg = pageArgs()
 
