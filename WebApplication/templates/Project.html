@@ -16,7 +16,12 @@
             <div class="custom-bar-chart">
                 <div class="twentytwenty-container">
                           <img src="{{ PROJECT.input_image.url }}" style="height: 450px; width: 100%; object-fit: cover;">
-                          <img src="{{ PROJECT.output_image.url }}" style="height: 450px; width: 100%; object-fit: cover;">
+                    {% if PROJECT.output_image %}
+                        <img src="{{ PROJECT.output_image.url }}" style="height: 450px; width: 100%; object-fit: cover;">
+                    {% else %}
+                        <img src={% static '/images/NewRequest.jpg' %} style="height: 450px; width: 100%; object-fit: cover;">
+                    {% endif %}
+
                 </div>
             </div>
             <div class="row" style="margin-top: 200px;">

@@ -223,7 +223,7 @@ class Project(models.Model):
 
     date_created = models.DateTimeField(auto_now_add=True)
     target_deadline = models.DateTimeField(default=None)
-    time_finished = models.DateTimeField(default=None)
+    time_finished = models.DateTimeField(default=None, blank=True, null=True)
     status = models.CharField(max_length=16, choices=PROJECT_STATUS, default="open")
 
     # Users related
@@ -236,13 +236,13 @@ class Project(models.Model):
     description = models.TextField(max_length=2048, default="")
 
     # Could be None, 1,2,3,4,5
-    owner_feedback = models.IntegerField(default=None)
+    owner_feedback = models.IntegerField(default=None, blank=True, null=True)
     owner_feedback_text = models.TextField(max_length=512, blank=True, null=True, default='')
     price_spend = models.IntegerField(default=1)
 
     input_file = models.FileField(upload_to='images/inputs/original_file', default=None)
-    input_image = models.ImageField(upload_to='images/inputs/main/', default=None)
-    input_image_thumbnail = models.ImageField(upload_to='images/inputs/thumbnail/', default=None)
+    input_image = models.ImageField(upload_to='images/inputs/main/', default=None, blank=True, null=True)
+    input_image_thumbnail = models.ImageField(upload_to='images/inputs/thumbnail/', default=None, blank=True, null=True)
 
     output_image = models.ImageField(upload_to='images/outputs/main/', default=None)
     output_image_thumbnail = models.ImageField(upload_to='images/outputs/thumbnail/', default=None)
@@ -264,6 +264,33 @@ class Project(models.Model):
     def days_remaining(self):
         today =now_aware = timezone.now()
         return (self.target_deadline - today).days
+
+    def create_thumbnail(self):
+        # Create thumbnail for main image only
+        image = Image.open(self.input_image.file)
+
+        w, h = image.size
+        ratio = w / 800
+        image.thumbnail(size=(int(w / ratio), int(h / ratio)))
+
+        image_file = BytesIO()
+        image.save(image_file, 'JPEG')
+
+        main_name = os.path.basename(self.input_image.name)
+        main_name = os.path.splitext(main_name)[0]
+
+        self.input_image_thumbnail.save(
+            main_name + "_thumbnail.jpeg",
+            InMemoryUploadedFile(
+                image_file,
+                None, '',
+                'image/jpeg',
+                image.size,
+                None,
+            ),
+            save=True
+        )
+        return True
 
     def create_thumbnails(self, related_list):
         # Relate list example: [(self.input_image, self.input_image_thumbnail)]
@@ -352,7 +379,7 @@ class Project(models.Model):
         if not isinstance(visitor, UserInfo):
             return False
 
-        if isinstance(visitor, Client) and visitor.id == self.client.id:
+        if isinstance(visitor, Client) and visitor.default_user.id == self.client.default_user.id:
             return True
 
         if isinstance(visitor, Designer):

@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.contrib import auth
 import itertools
 import datetime, re, json
+from PIL import Image
 
 from django.contrib.auth.models import User
 from django.core.files import File
@@ -439,23 +440,94 @@ def requests(request):
 
 @login_required(login_url='/login/')
 def new_request(request):
-    if request.method == 'GET':
-        parg = pageArgs()
-        parg.REQUESTS_ACTIVE = True
+    parg = pageArgs()
+    parg.REQUESTS_ACTIVE = True
 
-        # Open Requests -- showing all requests to designers only
-        ulist = list(Client.objects.filter(default_user=request.user))
-        if len(ulist) > 0:
-            if ulist[0].role == 'client':
-                user_profile = Client.objects.get(default_user=request.user)
-            else:
-                return HttpResponseForbidden()
+    # Open Requests -- showing all requests to designers only
+    ulist = list(Client.objects.filter(default_user=request.user))
+    if len(ulist) > 0:
+        if ulist[0].role == 'client':
+            user_profile = Client.objects.get(default_user=request.user)
         else:
             return HttpResponseForbidden()
+    else:
+        return HttpResponseForbidden()
 
+    if request.method == 'GET':
         parg.USER_INFO = user_profile
 
+        if not user_profile.activated:
+            parg.ERROR = ['Please confirm your email address to make your requests visible to editors']
+
         return render(request, 'new_request.html', parg.__dict__)
+
+    elif request.method == "POST":
+        main_input = None
+        if request.FILES and request.FILES.get('main_input', None):
+            main_input = request.FILES.get('main_input', None)
+
+        description = request.POST.get('description', "")
+        deadline_txt = request.POST.get('deadline', None)
+
+        parg.ERROR = []
+        if main_input is None:
+            parg.ERROR.append('Please upload your photo!')
+
+        dt = None
+        if deadline_txt is not None:
+            try:
+                dt = datetime.datetime.strptime(deadline_txt[:10] + " 23:59", '%m-%d-%Y %H:%M')
+            except:
+                dt = None
+
+        if dt is None:
+            parg.ERROR.append('Please specify the deadline!')
+
+        elif (dt - datetime.datetime.now()).days < 1:
+            parg.ERROR.append('Deadline should be at least 24 hours from now!')
+
+        if len(parg.ERROR) > 0:
+            return render(request, 'new_request.html', parg.__dict__)
+
+        project = Project()
+        project.description = description
+        project.target_deadline = dt
+        project.client = user_profile
+
+        #TODO: convert main input to JPG image
+        project.input_file = main_input
+        project.save()
+
+
+        image = Image.open(project.input_file.file)
+        image_file = BytesIO()
+        image.save(image_file, 'JPEG')
+
+        main_name = os.path.basename(project.input_file.name)
+        main_name = os.path.splitext(main_name)[0]
+
+        project.input_image.save(
+            main_name + ".jpg",
+            InMemoryUploadedFile(
+                image_file,
+                None, '',
+                'image/jpeg',
+                image.size,
+                None,
+            ),
+            save=True
+        )
+        project.save()
+
+        project.create_thumbnail()
+        project.save()
+
+        return redirect(f'/project/{project.id}/')
+
+
+
+    else:
+        return HttpResponseForbidden()
 
 
 @login_required(login_url='/login/')
