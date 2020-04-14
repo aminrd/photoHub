@@ -262,7 +262,7 @@ class Project(models.Model):
         return (self.target_deadline - self.date_created).days
 
     def days_remaining(self):
-        today =now_aware = timezone.now()
+        today = timezone.now()
         return (self.target_deadline - today).days
 
     def create_thumbnail(self):
