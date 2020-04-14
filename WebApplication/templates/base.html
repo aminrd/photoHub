@@ -49,19 +49,27 @@
     {% if USER_INFO %}
           <li id="header_notification_bar" class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="index.html#">
+            {% if USER_INFO.get_unread_notifications %}
                 {% if USER_INFO.get_unread_notifications.count > 0 %}
                     <i class="fas fa-bell"></i><span class="badge bg-warning">{{ USER_INFO.get_unread_notifications.count }}</span>
                 {% else %}
                     <i class="fas fa-bell"></i><span class="badge bg-theme">{{ USER_INFO.get_unread_notifications.count }}</span>
                 {% endif %}
+            {% else %}
+                 <i class="fas fa-bell"></i><span class="badge bg-theme">0</span>
+            {% endif %}
             </a>
             <ul class="dropdown-menu extended notification">
               <div class="notify-arrow notify-arrow-yellow"></div>
               <li>
-              {% if USER_INFO.get_unread_notifications.count > 0 %}
-                <p class="yellow">You have {{ USER_INFO.get_unread_notifications.count }} new notifications</p>
+              {% if USER_INFO.get_unread_notifications %}
+                  {% if USER_INFO.get_unread_notifications.count > 0 %}
+                    <p class="yellow">You have {{ USER_INFO.get_unread_notifications.count }} new notifications</p>
+                  {% else %}
+                      <p class="green">You have {{ USER_INFO.get_unread_notifications.count }} new notifications</p>
+                  {% endif %}
               {% else %}
-                  <p class="green">You have {{ USER_INFO.get_unread_notifications.count }} new notifications</p>
+                  <p class="green">You have 0 new notifications</p>
               {% endif %}
               </li>
             {% for notif in USER_INFO.get_notifications_l5 %}
@@ -189,7 +197,7 @@
               </a>
             <ul class="sub">
               <li><a href={% url 'new_request' %}>Post a request</a></li>
-              <li><a href="buttons.html">My requests</a></li>
+              <li><a href={% url 'my_requests' %}>My requests</a></li>
             </ul>
           </li>
           <li class="sub-menu">

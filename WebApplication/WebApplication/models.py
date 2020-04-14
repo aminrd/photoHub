@@ -256,7 +256,10 @@ class Project(models.Model):
         return 0, "Successful"
 
     def get_feedback_range(self):
-        return range(self.owner_feedback)
+        if not self.owner_feedback or self.owner_feedback is None:
+            return range(0)
+        else:
+            return range(self.owner_feedback)
 
     def total_days(self):
         return (self.target_deadline - self.date_created).days

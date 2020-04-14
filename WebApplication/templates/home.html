@@ -22,7 +22,11 @@
                     <div class="pn">
                         <div class="twentytwenty-container">
                           <img src="{{ P.input_image.url }}" style="height: 180px; width: 100%; object-fit: cover;">
+                        {% if P.output_image %}
                           <img src="{{ P.output_image.url }}" style="height: 180px; width: 100%; object-fit: cover;">
+                        {% else %}
+                            <img src="{{ P.input_image.url }}" style="height: 180px; width: 100%; object-fit: cover;">
+                        {% endif %}
                         </div>
                       <div class="mt centered">
                       <div class="row text-light" style="margin-top: -40px !important; padding-bottom: 20px !important;">

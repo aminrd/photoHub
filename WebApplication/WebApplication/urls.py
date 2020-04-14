@@ -33,6 +33,7 @@ urlpatterns = [
     path('myportfolio/', views.manage_portfolio, name='manage_portfolio'),
     path('requests/open/', views.requests),
     path('requests/new/', views.new_request, name='new_request'),
+    path('myrequests/', views.my_requests, name='my_requests'),
 
     path('project/<int:project_id>/', views.project_view),
 
