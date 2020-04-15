@@ -181,7 +181,7 @@
               {% endfor %}
               {% if user == PROJECT.client.default_user %}
                   <div class="row justify-content-center">
-                    <a href="#" class="btn btn-theme text-light"><i class="fas fa-list-alt"></i> See all</a>
+                    <a href="/project/{{ PROJECT.id }}/applicants/" class="btn btn-theme text-light"><i class="fas fa-list-alt"></i> See all</a>
                   </div>
               {% endif %}
           {% elif PROJECT.status == 'progress' %}

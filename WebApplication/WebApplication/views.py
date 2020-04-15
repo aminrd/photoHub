@@ -522,9 +522,7 @@ def new_request(request):
         project.create_thumbnail()
         project.save()
 
-        return redirect(f'/project/{project.id}/')
-
-
+        return redirect('..')
 
     else:
         return HttpResponseForbidden()
@@ -698,13 +696,30 @@ def manage_applicants(request, project_id):
     if project.client.default_user != request.user or not project.status == 'open':
         return HttpResponseForbidden()
 
+    parg.PROJECT = project
+    parg.REQUESTS_ACTIVE = True
+
     if request.method == 'GET':
-        parg.PROJECT = project
-        parg.REQUESTS_ACTIVE = True
         return render(request, 'applicants.html', parg.__dict__)
 
     elif request.method == 'POST':
-        return HttpResponseForbidden()
+        applicant_id = request.POST.get('applicant_id', '0')
+        print('==='*10)
+        print(applicant_id)
+        print('===' * 10)
+        try:
+            applicant_id = int(applicant_id)
+        except:
+            applicant_id = -1
+        designer = get_object_or_404(Designer, pk=applicant_id)
+
+        code, status = project.approve_designer(designer)
+        if code == 0:
+            return redirect(f'project/{project.id}/')
+        else:
+            parg.ERROR = [status]
+            return render(request, 'applicants.html', parg.__dict__)
+
     else:
         return HttpResponseForbidden()
 

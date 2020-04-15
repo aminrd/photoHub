@@ -359,8 +359,13 @@ class Project(models.Model):
         if not isinstance(designer, Designer):
             return 1, "Candidate should be a designer"
 
-        if not self.server or self.server is not None:
-            return 1, "Already has a candidate"
+        if self.server is not None:
+            try:
+                server_id = self.server.default_user.id
+            except:
+                server_id = None
+            if server_id is not None:
+                return 1, "Already has a candidate"
 
         if self.client.credit < designer.get_rate():
             return 2, "You need to charge your account to approve this designer. Please check your balance."
