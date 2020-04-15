@@ -74,7 +74,7 @@
               </li>
             {% for notif in USER_INFO.get_notifications_l5 %}
               <li>
-                <a href="{{ notif.link }}">
+                <a href="{{ notif.link }}" {% if not notif.read %}style="background-color: papayawhip; color: darkred;" {% endif %}>
                     {{ notif.get_content_short }}
                   </a>
               </li>

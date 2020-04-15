@@ -77,7 +77,7 @@ class UserInfo(models.Model):
             return static('img/UserProfileDefault.png')
 
     def get_notifications_l5(self):
-        l = list(self.notification_key.all().order_by('date_created'))
+        l = list(self.notification_key.all().order_by('-date_created'))
         return l[:5]
 
     def get_notifications(self):
@@ -374,13 +374,18 @@ class Project(models.Model):
         self.status = 'progress'
         self.save()
 
-        # TODO: Notify designer that he/she is approved
         r = designer.get_rate()
         self.client.charge(-r)
-        self.server.charge((4*r)//5)
+        self.price_spend = r
 
         self.server.score += 25
         self.server.save()
+
+        new_notif = Notification()
+        new_notif.related_user = designer
+        new_notif.content = f"{self.client.full_name()} just chose you as the editor of their photo. The deadline is {self.target_deadline}"
+        new_notif.link = f'/project/{self.id}/'
+        new_notif.save()
 
         return 0, "Successful"
 
@@ -395,7 +400,7 @@ class Project(models.Model):
             return True
 
         if isinstance(visitor, Designer):
-            if self.status == "open" or (self.status == 'progress' and visitor.id == self.server.id):
+            if self.status == "open" or (self.status == 'progress' and visitor.default_user.id == self.server.default_user.id):
                 return True
 
         return False

@@ -56,7 +56,7 @@
                           <input type="checkbox" class="mail-checkbox notif-item" id="notif-{{ notif.id }}">
                         </td>
                         <td class="view-message  dont-show"><a href="{{ notif.link }}" class='badge bg-theme text-light'>Open Details <i class="fas fa-external-link-alt"></i></a></td>
-                        <td class="view-message ">{{ notif.content }}</td>
+                          <td class="view-message "><a href="{{ notif.link }}">{{ notif.content }}</a></td>
                         <td class="view-message  text-right text-info">{{ notif.date_created }}</td>
                       </tr>
                     {% endfor %}

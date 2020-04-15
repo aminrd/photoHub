@@ -16,7 +16,7 @@ from django.core.files.temp import NamedTemporaryFile
 import phonenumber_field.validators as phone_validator
 from django.core.paginator import Paginator,  EmptyPage, PageNotAnInteger
 
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.template import Context
 class pageArgs:
     def __init__(self):
@@ -55,7 +55,7 @@ def logout(request):
 def login(request):
     if request.method == 'POST':
         user = auth.authenticate(username=request.POST['username'], password=request.POST['password'])
-        next = request.POST.get('NEXT', '')
+        next = request.POST.get('NEXT', '/')
         if user is not None:
             auth.login(request, user)
             if next == '':
@@ -641,6 +641,9 @@ def profile(request, user_id):
 
 @login_required(login_url='/login/')
 def project_view(request, project_id):
+    #TODO: upload file by designer
+    #TODO: download page by sending a query to download fiels
+    
     parg = pageArgs()
 
     ulist = list(UserInfo.objects.filter(default_user=request.user))
@@ -671,7 +674,7 @@ def project_view(request, project_id):
             if applicant_id >= 0 and applicant_id == request.user.id:
                 designer = get_object_or_404(Designer, pk=request.user.id)
                 project.add_applicant(designer)
-                return render(request, 'Project.html', parg.__dict__)
+                return HttpResponseRedirect("")
             else:
                 return HttpResponseForbidden()
     else:
