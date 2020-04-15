@@ -103,7 +103,7 @@
                 {% endif %}
                   <i class="fas fa-download fa-8x"></i>
                   <h5 class="mt">Download edit content</h5>
-                  <h6>TOTAL SIZE: 1388</h6>
+                  <h6>TOTAL SIZE: 1388 MB</h6>
                 <a href="#" class="btn btn-small btn-theme04" role="button" aria-pressed="true"><i class="fas fa-download"></i> Download</a>
                 </div>
               </div>
@@ -179,6 +179,11 @@
                   </div>
                 </div>
               {% endfor %}
+              {% if user == PROJECT.client.default_user %}
+                  <div class="row justify-content-center">
+                    <a href="#" class="btn btn-theme text-light"><i class="fas fa-list-alt"></i> See all</a>
+                  </div>
+              {% endif %}
           {% elif PROJECT.status == 'progress' %}
               <h4 class="centered mt">EDITOR</h4>
                 <div class="desc">

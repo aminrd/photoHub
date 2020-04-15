@@ -115,6 +115,7 @@ class Client(UserInfo):
 
     def get_feedback(self):
         l = self.get_projects()
+        l = [p for p in l if p.owner_feedback is not None and p.owner_feedback > 0]
         if len(l) > 0:
             return sum(x.owner_feedback for x in l) // len(l)
         else:
@@ -330,6 +331,9 @@ class Project(models.Model):
             os.remove(f_path)
         self.save()
         return True
+
+    def get_applicants_all(self):
+        return list(self.applicants.all())
 
     def get_applicants(self, max_num=10):
         applicant_list = list(self.applicants.all())

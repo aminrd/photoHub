@@ -679,6 +679,35 @@ def project_view(request, project_id):
     else:
         return HttpResponseForbidden()
 
+@login_required(login_url='/login/')
+def manage_applicants(request, project_id):
+    parg = pageArgs()
+
+    ulist = list(Client.objects.filter(default_user=request.user))
+    if len(ulist) > 0:
+        if ulist[0].role == 'client':
+            user_profile = Client.objects.get(default_user=request.user)
+        else:
+            return HttpResponseForbidden()
+    else:
+        return HttpResponseForbidden()
+
+    parg.USER_INFO = user_profile
+
+    project = get_object_or_404(Project, pk=project_id)
+    if project.client.default_user != request.user or not project.status == 'open':
+        return HttpResponseForbidden()
+
+    if request.method == 'GET':
+        parg.PROJECT = project
+        parg.REQUESTS_ACTIVE = True
+        return render(request, 'applicants.html', parg.__dict__)
+
+    elif request.method == 'POST':
+        return HttpResponseForbidden()
+    else:
+        return HttpResponseForbidden()
+
 
 @login_required(login_url='/login/')
 def fileManager(request):
