@@ -690,9 +690,23 @@ def project_view(request, project_id):
                 project.owner_feedback = rating
                 project.save()
                 return HttpResponse("OK")
-
             else:
                 return HttpResponseForbidden()
+
+        elif form_type == 'allow_status':
+            allow_status = request.POST.get('allow_status', 'no')
+            if allow_status == 'yes':
+                allow_status = True
+            else:
+                allow_status = False
+
+            if request.user == project.client.default_user and project.price_spend > 0:
+                project.allowed_to_share = allow_status
+                project.save()
+                return HttpResponse("OK")
+            else:
+                return HttpResponseForbidden()
+
 
         return HttpResponseForbidden()
     else:

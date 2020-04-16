@@ -215,20 +215,25 @@
                   </div>
                 </div>
 
-              {% if user == PROJECT.client.default_user %}
-              <h4 class="centered mt">Allow {{ PROJECT.server.default_user.first_name }} to show this edit on portfolio?</h4>
-                <div class="desc">
-                  <div class="thumb">
-                    <span class="badge bg-theme"><i class="fa fa-clock-o"></i></span>
-                  </div>
-                  <div class="details">
-                    <p>
-                      <muted> {% for l in PROJECT.server.get_level_range %}<i class="far fa-circle"></i>{% endfor %}</muted>
-                      <br/>
-                      <a href="/profile/{{ PROJECT.server.default_user.id }}/">{{ PROJECT.server.default_user.first_name }}</a> edited this photo<br/>
-                    </p>
-                  </div>
-                </div>
+              {% if user == PROJECT.client.default_user%}
+
+                 {% if PROJECT.price_spend >= 1 %}
+                  <h4 class="centered mt">Allow {{ PROJECT.server.default_user.first_name }} to show this edit on portfolio?</h4>
+                    <div class="desc">
+                    <div class="row justify-content-center">
+                          <div class="btn-group">
+                              {% if PROJECT.allow_to_share %}
+                                    <button type="button" class="btn btn-seconday" id="share-no">No</button>
+                                    <button type="button" class="btn btn-success" id="share-yes">Yes</button>
+                              {% else %}
+                                    <button type="button" class="btn btn-danger" id="share-no">No</button>
+                                    <button type="button" class="btn btn-secondary" id="share-yes">Yes</button>
+                              {% endif %}
+
+                          </div>
+                    </div>
+                    </div>
+                 {% endif %}
 
               <h4 class="centered mt">How much do you like this edit?</h4>
                 <div class="desc">
@@ -347,6 +352,41 @@ $(function () {
 
 });
 </script>
+{% if PROJECT.price_spend >= 1 %}
+<script>
+{% if PROJECT.allow_to_share %}
+    var allow_status = 'yes';
+{% else %}
+    var allow_status = 'no';
+{% endif %}
+function send_allow_status() {
+  $.ajax({
+      url: ".",
+      type: "POST",
+      data: {
+          csrfmiddlewaretoken: '{{ csrf_token }}',
+          type: 'allow_status',
+          allow_status: allow_status,
+      }
+  });
+}
+
+document.getElementById('share-no').onclick = function () {
+    allow_status = 'no';
+    $("#share-no").removeClass("btn-secondary").addClass("btn-danger");
+    $("#share-yes").removeClass("btn-success").addClass("btn-secondary");
+    send_allow_status();
+}
+
+document.getElementById('share-yes').onclick = function () {
+    allow_status = 'yes';
+    $("#share-no").removeClass("btn-danger").addClass("btn-secondary");
+    $("#share-yes").removeClass("btn-secondary").addClass("btn-success");
+    send_allow_status();
+}
+</script>
+{% endif %}
+
 {% endif %}
 
 {% endblock %}
