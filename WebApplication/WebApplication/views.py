@@ -677,6 +677,24 @@ def project_view(request, project_id):
                 return HttpResponseRedirect("")
             else:
                 return HttpResponseForbidden()
+
+        elif form_type == 'client_rating':
+            rating = request.POST.get('rating_value', "0")
+
+            try:
+                rating = int(rating)
+            except:
+                rating = -1
+
+            if request.user == project.client.default_user and 1<= rating <= 5:
+                project.owner_feedback = rating
+                project.save()
+                return HttpResponse("OK")
+
+            else:
+                return HttpResponseForbidden()
+
+        return HttpResponseForbidden()
     else:
         return HttpResponseForbidden()
 
