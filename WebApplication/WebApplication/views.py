@@ -784,6 +784,7 @@ def fileManager(request):
 
                     project.output_image = request.FILES.get('file')
                     project.status = 'finished'
+                    project.time_finished = datetime.datetime.now()
                     project.save()
 
                     # Notify client:

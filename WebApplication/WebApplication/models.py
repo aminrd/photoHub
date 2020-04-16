@@ -265,6 +265,13 @@ class Project(models.Model):
     def total_days(self):
         return (self.target_deadline - self.date_created).days
 
+    def get_file_size(self):
+        if self.status == 'finished' and self.output_image:
+            path = self.output_image.path
+        else:
+            path = self.input_file.path
+        return os.path.getsize(path) / (1024 * 1024)
+
     def days_remaining(self):
         today = timezone.now()
         return (self.target_deadline - today).days
