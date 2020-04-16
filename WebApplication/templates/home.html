@@ -30,17 +30,19 @@
                         </div>
                       <div class="mt centered">
                       <div class="row text-light" style="margin-top: -40px !important; padding-bottom: 20px !important;">
-                          <div class="col-4">Editor</div>
-                          <div class="col-4">Score</div>
-                          <div class="col-4">Open this edit</div>
+                          <div class="col-1"></div>
+                          <div class="col-3 bg-theme03">Editor</div>
+                          <div class="col-4 bg-theme03">Score</div>
+                          <div class="col-3 bg-theme03">Open this edit</div>
+                          <div class="col-1"></div>
                       </div>
                       <div class="row">
                       <div class="col-4">
                           {% if P.server %}
-                           <a href="/profile/{{ P.server.default_user.id }}/"> <img src="#" class="rounded-circle" width="40" style="margin-top: -10px !important;">
+                           <a href="/profile/{{ P.server.default_user.id }}/"> <img src="{{ P.server.get_profile_thumbnail }}" class="rounded-circle" width="40" style="margin-top: -10px !important;">
                                 {{ P.server.default_user.first_name }}</a>
                           {% else %}
-                           <a href="#"> <img src="{{ P.server.get_profile_thumbnail }}" class="rounded-circle" width="40" style="margin-top: -10px !important;">
+                           <a href="#">
                                 N/A</a>
                           {% endif %}
                       </div>
