@@ -27,7 +27,11 @@
                               {{ PROJECT.client.default_user.first_name }} {{ PROJECT.client.default_user.last_name }}
                           </th>
                             <td><img class="img-responsive" src="{{ PROJECT.input_image.url }}" width="200" alt="project-image"></td>
+                        {% if PROJECT.output_image %}
                             <td><img class="img-responsive" src="{{ PROJECT.output_image.url }}" width="200" alt="project-image"></td>
+                        {% else %}
+                            <td><img class="img-responsive" src="{{ PROJECT.input_image.url }}" width="200" alt="project-image"></td>
+                        {% endif %}
 
 
                             <td class="align-middle">

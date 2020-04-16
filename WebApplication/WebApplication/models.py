@@ -400,7 +400,7 @@ class Project(models.Model):
             return True
 
         if isinstance(visitor, Designer):
-            if self.status == "open" or (self.status == 'progress' and visitor.default_user.id == self.server.default_user.id):
+            if self.status == "open" or (visitor.default_user.id == self.server.default_user.id):
                 return True
 
         return False

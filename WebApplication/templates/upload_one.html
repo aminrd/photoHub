@@ -21,7 +21,7 @@
         <h3><i class="fa fa-angle-right"></i> Dropzone File Upload</h3>
         <div class="row mt justify-content-center" id="demo-dropzone">
             <div id="demo-dropzone">
-              <form action="/fileManager/" class="dropzone needsclick d-block" id="demo-upload">
+              <form action="/filemanager/" class="dropzone needsclick d-block" id="demo-upload" enctype="multipart/form-data">
                   {% csrf_token %}
                   <input type="text" id="MODEL_NAME" name="MODEL_NAME" value="{{ MODEL_NAME }}" class="d-none">
                   <input type="number" id="MODEL_ID" name="MODEL_ID" value="{{ MODEL_ID }}" class="d-none">
@@ -105,6 +105,7 @@
                     self.emit("success", file, 'success', null);
                     self.emit("complete", file);
                     self.processQueue();
+                    close();
                     //document.getElementsByClassName("dz-success-mark").style.opacity = "1";
                   }
                 };

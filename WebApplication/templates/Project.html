@@ -98,7 +98,7 @@
             <div class="row">
               <div class="col-lg-4 col-md-4 col-sm-4 mb">
                 <div class="product-panel-2 pn">
-                {% if PROJECT.status != 'finished' %}
+                {% if PROJECT.status == 'finished' %}
                     <div class="badge badge-hot">Final</div>
                 {% endif %}
                   <i class="fas fa-download fa-8x"></i>
@@ -115,7 +115,7 @@
                             <h5>Submit</h5>
                           </div>
                             <br>
-                        <a href="#" class="btn btn-theme03 btn-xl active" style="margin-bottom: 25px;" role="button" aria-pressed="true"><i class="fas fa-upload"></i> upload panel</a>
+                        <a target="_blank" href="/filemanager?MODEL_NAME=project&FIELD_NAME=output_file&MODEL_ID={{ PROJECT.id }}" class="btn btn-theme03 btn-xl active" style="margin-bottom: 25px;" role="button" aria-pressed="true"><i class="fas fa-upload"></i> upload panel</a>
                             <br>
                           <h3>Upload files</h3>
                         </div>
@@ -147,7 +147,7 @@
                 {% elif PROJECT.status == 'progress' %}
                     <div class="btn btn-round btn-warning btn-sm">Being edited</div>
                 {% else %}
-                    <div class="btn btn-round btn-primary btn-sm">Finished</div>
+                    <div class="btn btn-round btn-theme04 btn-sm">Finished</div>
                 {% endif %}
             </h4>
 

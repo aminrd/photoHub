@@ -394,7 +394,7 @@ def manage_portfolio(request):
     parg.USER_INFO = user_profile
     parg.PROFILE_ACTIVE = True
 
-    plist = Project.objects.all().filter(server=user_profile).filter(status='progress').order_by('target_deadline')
+    plist = Project.objects.all().filter(server=user_profile).order_by('-target_deadline')
     parg.PLIST = plist
 
     return render(request, 'managePortfolio.html', parg.__dict__)
@@ -643,7 +643,7 @@ def profile(request, user_id):
 def project_view(request, project_id):
     #TODO: upload file by designer
     #TODO: download page by sending a query to download fiels
-    
+
     parg = pageArgs()
 
     ulist = list(UserInfo.objects.filter(default_user=request.user))
@@ -707,9 +707,6 @@ def manage_applicants(request, project_id):
 
     elif request.method == 'POST':
         applicant_id = request.POST.get('applicant_id', '0')
-        print('==='*10)
-        print(applicant_id)
-        print('===' * 10)
         try:
             applicant_id = int(applicant_id)
         except:
@@ -718,7 +715,8 @@ def manage_applicants(request, project_id):
 
         code, status = project.approve_designer(designer)
         if code == 0:
-            return redirect(f'project/{project.id}/')
+            #TODO: Test approving an applicant redirection susccessfluy
+            return redirect(reverse(f'/project/{project.id}/'))
         else:
             parg.ERROR = [status]
             return render(request, 'applicants.html', parg.__dict__)
@@ -742,24 +740,52 @@ def fileManager(request):
         if m_name.lower() == 'project':
             project = get_object_or_404(Project, pk=m_id)
             if m_field.lower() == 'input_file':
-                project.input_file = request.FILES.get('file')
-                project.save()
+                return HttpResponseForbidden()
+                # project.input_file = request.FILES.get('file')
+                # project.save()
 
             elif m_field.lower() == 'output_file':
-                project.output_image = request.FILES.get('file')
-                project.save()
+                if project.server is not None and request.user.id == project.server.default_user.id:
+
+                    if project.days_remaining() < 0:
+                        return HttpResponseForbidden()
+
+                    project.output_image = request.FILES.get('file')
+                    project.status = 'finished'
+                    project.save()
+
+                    # Notify client:
+                    notif = Notification()
+                    notif.related_user = project.client
+                    notif.content = f"""
+                        Good news! {project.server.full_name()} finished editing your photo. Look at the edit. 
+                        Don't forget to rate this edit and give us your feedback.
+                    """
+                    notif.link = f'/project/{project.id}/'
+                    notif.save()
+
+                    # Give money to designer
+                    project.server.charge( (4 * project.price_spend) // 5 )
+                    project.server.save()
+
+                    return HttpResponseRedirect(f'/project/{project.id}/')
+
+                else:
+                    return HttpResponseForbidden()
 
         elif m_name.lower == 'client':
-            client = get_object_or_404(Client, pk=m_id)
-            if m_field.lower() == 'profile_picture':
-                client.profile_picture = request.FILES.get('file')
-                client.save()
+            return HttpResponseForbidden()
+            # client = get_object_or_404(Client, pk=m_id)
+            # if m_field.lower() == 'profile_picture':
+            #     client.profile_picture = request.FILES.get('file')
+            #     client.save()
 
         elif m_name.lower == 'designer':
-            designer = get_object_or_404(Designer, pk=m_id)
-            if m_field.lower() == 'profile_picture':
-                designer.profile_picture = request.FILES.get('file')
-                designer.save()
+            return HttpResponseForbidden()
+            # designer = get_object_or_404(Designer, pk=m_id)
+            # if m_field.lower() == 'profile_picture':
+            #     designer.profile_picture = request.FILES.get('file')
+            #     designer.save()
 
         else:
             return HttpResponseForbidden()
