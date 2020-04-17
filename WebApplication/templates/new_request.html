@@ -13,7 +13,7 @@
     <h3><i class="fa fa-angle-right"></i> Post a new edit request</h3>
 
       {% if ERROR %}
-          {% for error in ERROR %}<h5 class="text-danger">{{ error }}</h5>{% endfor %}
+          {% for error in ERROR %}<h5 class="alert alert-danger">{{ error }}</h5>{% endfor %}
       {% endif %}
 
         <div class="row mt">

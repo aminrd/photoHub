@@ -968,7 +968,6 @@ def activate(request):
                     activation.save()
 
                 #TODO: SMS user verification code
-
                 return render(request, 'activation.html', parg.__dict__)
             else:
                 return HttpResponseForbidden()

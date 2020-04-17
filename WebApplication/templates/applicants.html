@@ -9,9 +9,9 @@
             <img src="{{ PROJECT.input_image.url }}" width="400" height="300">
         </div>
 
-    {% if ERROR %}
-          {% for error in ERROR %}<h5 class="text-danger">{{ error }}</h5>{% endfor %}
-  {% endif %}
+      {% if ERROR %}
+          {% for error in ERROR %}<h5 class="alert alert-danger">{{ error }}</h5>{% endfor %}
+      {% endif %}
         <!-- row -->
         <div class="row mt">
           <div class="col-md-12">
