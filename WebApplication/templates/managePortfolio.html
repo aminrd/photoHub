@@ -35,7 +35,7 @@
 
 
                             <td class="align-middle">
-                                {% if PROJECT.allowed_to_share %}
+                                {% if not PROJECT.allowed_to_share %}
                                     <i class="fas fa-times-circle fa-2x text-danger"></i>
                                 {% else %}
                                     <i class="fas fa-check-circle fa-2x text-success"></i>

@@ -13,7 +13,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from io import BytesIO
 from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
-import os, datetime
+import os, datetime, random, string
 from django.utils import timezone
 
 
@@ -486,3 +486,27 @@ class Notification(models.Model):
             return self.content[:30] + "..."
         else:
             return self.content
+
+
+def random_code_generator(length=6):
+    alphabet = string.ascii_lowercase + string.digits
+    return ''.join(random.choice(alphabet) for i in range(length))
+
+
+class Activation(models.Model):
+    email_address = models.EmailField(default=None, blank=True, null=True)
+    phone_number = PhoneNumberField(blank=True, null=True)
+    max_tried = models.IntegerField(default=3)
+    code = models.CharField(max_length=6, default=random_code_generator())
+
+    def try_code(self, code=""):
+        alphabet = string.ascii_lowercase + string.digits
+        code = "".join(l for l in code if l in alphabet)
+        self.max_tried = self.max_tried - 1
+        self.save()
+
+        if self.max_tried >= 0:
+            if code == self.code:
+                return True
+
+        return False
