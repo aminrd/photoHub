@@ -22,7 +22,7 @@
                       <tbody>
                       {% for PROJECT in PLIST %}
                         <tr>
-                          <th scope="row" >
+                          <th scope="row" class="align-middle">
                               <img class="img-responsive" src="{{ PROJECT.client.get_profile_thumbnail }}" width="60" height="60" alt="{{ PROJECT.client.default_user.first_name }}-image">
                               {{ PROJECT.client.default_user.first_name }} {{ PROJECT.client.default_user.last_name }}
                           </th>
@@ -43,14 +43,20 @@
                             </td>
 
                             <td class="align-middle">
-                                {% if PROJECT.allowed_to_share %}
-                                    <i class="fas fa-times-circle fa-2x text-danger"></i>
+                            <div class="btn-group">
+                                {% if PROJECT.report_on_portfolio %}
+                                    <button type="button" class="btn btn-secondary" id="portfolio-no-{{ PROJECT.id }}" onclick="change_portfolio({{ PROJECT.id }}, 'no')">No</button>
+                                    <button type="button" class="btn btn-success" id="portfolio-yes-{{ PROJECT.id }}" onclick="change_portfolio({{ PROJECT.id }}, 'yes')">Yes</button>
                                 {% else %}
-                                    <i class="fas fa-check-circle fa-2x text-success"></i>
+                                    <button type="button" class="btn btn-danger" id="portfolio-no-{{ PROJECT.id }}" onclick="change_portfolio({{ PROJECT.id }}, 'no')">No</button>
+                                    <button type="button" class="btn btn-secondary" id="portfolio-yes-{{ PROJECT.id }}" onclick="change_portfolio({{ PROJECT.id }}, 'yes')">Yes</button>
                                 {% endif %}
+                            </div>
                             </td>
 
-                            <td><a href="/project/{{ PROJECT.id }}/">Open this project</a></td>
+                            <td class="align-middle">
+                                <a target="_blank" class="btn btn-theme03" href="/project/{{ PROJECT.id }}/"><i class="fas fa-external-link-square-alt"></i> Open</a>
+                            </td>
                         </tr>
                       {% endfor %}
                       </tbody>
@@ -61,4 +67,25 @@
 
 
 {% block SCRIPTS %}
+<script>
+function change_portfolio(project_id, action) {
+  if(action == 'yes'){
+    $("#portfolio-no-"+project_id).removeClass("btn-danger").addClass("btn-secondary");
+    $("#portfolio-yes-"+project_id).removeClass("btn-secondary").addClass("btn-success");
+  }else{
+    $("#portfolio-no-"+project_id).removeClass("btn-secondary").addClass("btn-danger");
+    $("#portfolio-yes-"+project_id).removeClass("btn-success").addClass("btn-secondary");
+  }
+  $.ajax({
+      url: ".",
+      type: "POST",
+      data: {
+          csrfmiddlewaretoken: '{{ csrf_token }}',
+          type: 'change_portfolio',
+          project_id: project_id,
+          allow_status: action,
+      }
+  });
+}
+</script>
 {% endblock %}

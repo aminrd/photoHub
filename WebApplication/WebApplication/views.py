@@ -391,13 +391,41 @@ def manage_portfolio(request):
     else:
         return HttpResponseForbidden()
 
-    parg.USER_INFO = user_profile
-    parg.PROFILE_ACTIVE = True
+    if request.method == 'GET':
+        parg.USER_INFO = user_profile
+        parg.PROFILE_ACTIVE = True
 
-    plist = Project.objects.all().filter(server=user_profile).order_by('-target_deadline')
-    parg.PLIST = plist
+        plist = Project.objects.all().filter(server=user_profile).order_by('-target_deadline')
+        parg.PLIST = plist
 
-    return render(request, 'managePortfolio.html', parg.__dict__)
+        return render(request, 'managePortfolio.html', parg.__dict__)
+    else:
+        # type: 'change_portfolio',
+        # project_id: project_id,
+        # allow_status: action,
+
+        msg_type = request.POST.get('type', None)
+        pid = request.POST.get('project_id', None)
+        try:
+            pid = int(pid)
+        except:
+            return HttpResponseForbidden()
+
+        if msg_type == 'change_portfolio':
+            allow_status = request.POST.get('allow_status', 'no')
+            allow_status = allow_status.lower()
+
+            project = get_object_or_404(Project, pk=pid)
+
+            if allow_status == 'yes':
+                project.report_on_portfolio = True
+            else:
+                project.report_on_portfolio = False
+            project.save()
+            return HttpResponse("OK")
+
+        else:
+            return HttpResponseForbidden()
 
 
 @login_required(login_url='/login/')
