@@ -926,10 +926,87 @@ def activate(request):
             user_profile = Client.objects.get(default_user=request.user)
     else:
         user_profile = None
+
+    if user_profile is None:
+        return HttpResponseForbidden()
+
     parg.USER_INFO = user_profile
     parg.PROFILE_ACTIVE = True
 
-    return render(request, 'activation.html', parg.__dict__)
+    if request.method == 'GET':
+        return render(request, 'activation.html', parg.__dict__)
+    else:
+        form_type = request.POST.get('form_type', None)
+
+        if form_type == 'resend':
+            activate_email = request.POST.get('resend_activation_email', None)
+            activate_phone = request.POST.get('resend_verification_code', None)
+
+            if activate_email == '1':
+                if user_profile.activated:
+                    return HttpResponseForbidden()
+
+                if Activation.objects.all().filter(email_address=user_profile.default_user.email).exists():
+                    activation = Activation.objects.get(email_address=user_profile.default_user.email)
+                else:
+                    activation = Activation()
+                    activation.email_address = user_profile.default_user.email
+                    activation.save()
+
+                #TODO: email user activation.code
+                return render(request, 'activation.html', parg.__dict__)
+
+            elif activate_phone == '1':
+                if user_profile.verified:
+                    return HttpResponseForbidden()
+
+                if Activation.objects.all().filter(phone_number=user_profile.phone_number).exists():
+                    activation = Activation.objects.get(phone_number=user_profile.phone_number)
+                else:
+                    activation = Activation()
+                    activation.phone_number = user_profile.phone_number
+                    activation.save()
+
+                #TODO: SMS user verification code
+
+                return render(request, 'activation.html', parg.__dict__)
+            else:
+                return HttpResponseForbidden()
+
+        elif form_type == 'activation':
+            email_code = request.POST.get('email_verification_code', None)
+            phone_code = request.POST.get('verification_code', None)
+
+            if email_code is not None and not user_profile.activated:
+                if Activation.objects.all().filter(email_address=user_profile.default_user.email).exists():
+                    activation = Activation.objects.get(email_address=user_profile.default_user.email)
+                    result = activation.try_code(email_code)
+                    if result:
+                        activation.delete()
+                        user_profile.activated = True
+                        user_profile.save()
+                        return redirect('home')
+
+                    else:
+                        if activation.max_tried <= 0:
+                            activation.delete()
+
+                        parg.ERROR = ['Verification code is wrong! Try again. If you have not received the code, click on resend button']
+                        return render(request, 'activation.html', parg.__dict__)
+                else:
+                    parg.ERROR = ['Activation code is expired! Click on resend button']
+                    return render(request, 'activation.html', parg.__dict__)
+
+
+
+            elif phone_code is not None and not user_profile.verified:
+                pass
+            else:
+                return HttpResponseForbidden()
+
+        else:
+            return HttpResponseForbidden()
+
 
 
 @login_required(login_url='/login/')
