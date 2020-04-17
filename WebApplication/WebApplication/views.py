@@ -975,7 +975,7 @@ def activate(request):
 
         elif form_type == 'activation':
             email_code = request.POST.get('email_verification_code', None)
-            phone_code = request.POST.get('verification_code', None)
+            phone_code = request.POST.get('phone_verification_code', None)
 
             if email_code is not None and not user_profile.activated:
                 if Activation.objects.all().filter(email_address=user_profile.default_user.email).exists():
@@ -997,7 +997,25 @@ def activate(request):
                     parg.ERROR = ['Activation code is expired! Click on resend button']
                     return render(request, 'activation.html', parg.__dict__)
 
+            elif phone_code is not None and not user_profile.verified:
+                if Activation.objects.all().filter(phone_number=user_profile.phone_number).exists():
+                    activation = Activation.objects.get(phone_number=user_profile.phone_number)
+                    result = activation.try_code(phone_code)
+                    if result:
+                        activation.delete()
+                        user_profile.verified = True
+                        user_profile.save()
+                        return redirect('home')
+                    else:
+                        if activation.max_tried <= 0:
+                            activation.delete()
 
+                        parg.ERROR = ['Verification code is wrong! Try again. If you have not received the code, click on resend button']
+
+                        return render(request, 'activation.html', parg.__dict__)
+                else:
+                    parg.ERROR = ['Activation code is expired! Click on resend button']
+                    return render(request, 'activation.html', parg.__dict__)
 
             elif phone_code is not None and not user_profile.verified:
                 pass

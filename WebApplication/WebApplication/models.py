@@ -510,6 +510,7 @@ class Activation(models.Model):
     def try_code(self, code=""):
         alphabet = string.ascii_lowercase + string.digits
         code = "".join(l for l in code if l in alphabet)
+
         self.max_tried = self.max_tried - 1
         self.save()
 

@@ -15,7 +15,8 @@
           {% for error in ERROR %}<h5 class="text-danger">{{ error }}</h5>{% endfor %}
       {% endif %}
 
-       {% if not USER_INFO.actiaved %}
+
+       {% if not USER_INFO.activated %}
         <div class="row mt">
           <div class="col-lg-12">
             <div class="form-panel">
@@ -47,9 +48,19 @@
                <input type="hidden" name="form_type" value="resend">
             <input type="hidden" name="resend_activation_email" value="1" >
            </form>
+       {% else %}
+        <div class="row mt">
+          <div class="col-lg-12">
+            <div class="form-panel">
+              <h4 class="mb text-success"><i class="fa fa-angle-right"></i> Your account is activated! </h4>
+            </div>
+            <!-- /form-panel -->
+          </div>
+          <!-- /col-lg-12 -->
+        </div>
       {% endif %}
 
-        {% if USER_INFO.role == 'designer' or USER_INFO.verified %}
+        {% if USER_INFO.role == 'designer' and not USER_INFO.verified %}
         <div class="row mt">
           <div class="col-lg-12">
             <div class="form-panel">
@@ -65,7 +76,7 @@
                   <div class="form-group col-md-1"></div>
                 <div class="form-group">
                   <label class="sr-only" for="verification_code">Password</label>
-                  <input type="text" class="form-control" id="verification_code" placeholder="Activation Code" name="email_verification_code">
+                  <input type="text" class="form-control" id="verification_code" placeholder="Activation Code" name="phone_verification_code">
                 </div>
                   <div class="form-group col-md-1"></div>
                 <button type="submit" class="btn btn-theme">Verify</button>
