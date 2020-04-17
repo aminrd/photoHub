@@ -122,7 +122,8 @@ class Client(UserInfo):
             return 1
 
     def get_feedback_range(self):
-        return range(int(self.get_feedback())), (self.get_feedback() - int(self.get_feedback())) > 0.1
+        fb = self.get_feedback()
+        return range(int(fb)), (fb - int(fb)) > 0.1
 
 
 
@@ -142,10 +143,17 @@ class Designer(UserInfo):
     linkedin_url = models.CharField(max_length=1024, blank=True, null=True, default=None)
 
     def get_feedback(self):
-        return self.avg_feedback
+        plist = Project.objects.all().filter(server=self).filter(status='finished')
+        plist = [p.owner_feedback for p in plist if (p.owner_feedback and p.owner_feedback is not None)]
+
+        if len(plist) < 1:
+            return 0
+
+        return sum(plist) / len(plist)
 
     def get_feedback_range(self):
-        return range(int(self.avg_feedback)) , (self.avg_feedback - int(self.avg_feedback)) > 0.1
+        fb = self.avg_feedback
+        return range(int(fb)), (fb - int(fb)) > 0.1
 
     def update_avg_feedback(self):
         plist = list(self.project_server.all())
