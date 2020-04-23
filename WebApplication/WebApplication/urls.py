@@ -14,7 +14,9 @@ admin.site.index_title = 'Database management'
 admin.site.site_title = 'PhotoHub Admin'
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
+
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -47,7 +49,12 @@ urlpatterns = [
 
     path('balance/', views.balance, name='balance'),
 
-    # Project management:
+    # Password reset management:
+    re_path(r'^password_reset/$', auth_views.PasswordResetView, name='password_reset'),
+    re_path(r'^password_reset/done/$', auth_views.PasswordResetDoneView, name='password_reset_done'),
+    re_path(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        auth_views.PasswordResetConfirmView, name='password_reset_confirm'),
+    re_path(r'^reset/done/$', auth_views.PasswordResetCompleteView, name='password_reset_complete'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

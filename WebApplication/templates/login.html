@@ -43,13 +43,13 @@
 {#            <input type="checkbox" value="remember-me"> Remember me#}
 
 {% if error %}
-            <span class="pull-right">
+            <span class="float-right">
             <p data-toggle="modal" class="alert alert-danger">{{ error }}</p>
             </span>
           <br>
 {% endif %}
-            <span class="pull-right">
-            <a data-toggle="modal" href="login.html#myModal"> Forgot Password?</a>
+            <span class="float-right">
+            <a data-toggle="modal" href="#myModal"> Forgot Password?</a>
             </span>
             </label>
           <button class="btn btn-theme btn-block" type="submit"><i class="fa fa-lock"></i> SIGN IN</button>
@@ -61,27 +61,30 @@
           </div>
           <div class="registration">
             Don't have an account yet?<br/>
-            <a class="" href="#">
+            <a class="" href={% url 'client_signup' %}>
               Create an account
               </a>
           </div>
         </div>
         <!-- Modal -->
         <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
-          <div class="modal-dialog">
+          <div class="modal-dialog" role="document">
             <div class="modal-content">
-              <div class="modal-header">
+              <div class="modal-header float-left">
+                  <h4 class="modal-title">Forgot Password?</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Forgot Password ?</h4>
               </div>
-              <div class="modal-body">
-                <p>Enter your e-mail address below to reset your password.</p>
-                <input type="text" name="email" placeholder="Email" autocomplete="off" class="form-control placeholder-no-fix">
-              </div>
-              <div class="modal-footer">
-                <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                <button class="btn btn-theme" type="button">Submit</button>
-              </div>
+            <form>{% csrf_token %}
+                <input type="hidden" name="form_type" value="reset_password">
+                  <div class="modal-body">
+                    <p>Enter your e-mail address below to reset your password.</p>
+                    <input type="text" name="email" placeholder="Email" autocomplete="off" class="form-control placeholder-no-fix">
+                  </div>
+                  <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                    <button class="btn btn-theme" type="submit">Submit</button>
+                  </div>
+            </form>
             </div>
           </div>
         </div>
@@ -97,7 +100,7 @@
   <script type="text/javascript" src={% static "lib/jquery.backstretch.min.js" %}></script>
   <script>
     $.backstretch('{% static "img/login-bg.jpg" %}', {
-      speed: 500
+      transitionDuration: 1000
     });
   </script>
 </body>

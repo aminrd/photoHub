@@ -149,10 +149,12 @@ class Designer(UserInfo):
         if len(plist) < 1:
             return 0
 
-        return sum(plist) / len(plist)
+        self.avg_feedback = sum(plist) / len(plist)
+        self.save()
+        return self.avg_feedback
 
     def get_feedback_range(self):
-        fb = self.avg_feedback
+        fb = self.get_feedback()
         return range(int(fb)), (fb - int(fb)) > 0.1
 
     def update_avg_feedback(self):
@@ -405,6 +407,9 @@ class Project(models.Model):
         return 0, "Successful"
 
     def is_visible(self, visitor=None):
+        if self.client is None or not self.client.activated:
+            return False
+
         if self.allowed_to_share:
             return True
 

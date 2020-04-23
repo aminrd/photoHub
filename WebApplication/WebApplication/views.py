@@ -54,6 +54,9 @@ def logout(request):
 
 def login(request):
     if request.method == 'POST':
+        # Reset password:
+
+
         user = auth.authenticate(username=request.POST['username'], password=request.POST['password'])
         next = request.POST.get('NEXT', '/')
         if user is not None:
@@ -447,7 +450,7 @@ def requests(request):
         parg.USER_INFO = user_profile
 
         plist = Project.objects.all().filter(status='open').order_by('target_deadline')
-        plist = list(x for x in plist if x.days_remaining() >= 0)
+        plist = list(x for x in plist if x.days_remaining() >= 0 and x.client.activated)
         print(plist)
 
         page = request.GET.get('page', 1)
@@ -485,7 +488,7 @@ def new_request(request):
         parg.USER_INFO = user_profile
 
         if not user_profile.activated:
-            parg.ERROR = ['Please confirm your email address to make your requests visible to editors']
+            parg.ERROR = ['Please confirm your email address so that editors can see your request']
 
         return render(request, 'new_request.html', parg.__dict__)
 
