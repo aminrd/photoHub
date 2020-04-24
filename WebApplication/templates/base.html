@@ -208,7 +208,7 @@
           <ul class="sub">
               <li><a href="/profile/{{ user.id }}/">My profile</a></li>
               <li><a href={% url 'client_signup' %}>Edit profile</a></li>
-            {% if not USER_INFO.verified or not USER_INFO.activated %}
+            {% if not USER_INFO.activated %}
                 <li><a class="text-warning" href="{% url 'activate' %}">Activate your profile</a></li>
             {% endif %}
           </ul>
