@@ -126,8 +126,6 @@ class Client(UserInfo):
         return range(int(fb)), (fb - int(fb)) > 0.1
 
 
-
-
 class Designer(UserInfo):
     score = models.IntegerField(default=0)
     avg_feedback = models.DecimalField(max_digits=3, decimal_places=1, default=0.0)
@@ -524,3 +522,5 @@ class Activation(models.Model):
                 return True
 
         return False
+
+
