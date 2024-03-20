@@ -18,3 +18,8 @@ WebApplication/WebApplication/__pycache__/
 WebApplication/.idea/*
 WebApplication/WebApplication/__pycache__/*
 */__pycache__/*
+
+
+WebApplication/db.sqlite3
+WebApplication/WebApplication/migrations
+
