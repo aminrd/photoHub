@@ -1,0 +1,10 @@
+{% autoescape off %}
+Dear {{ user.get_username }},
+
+    welcome to EditHub. Your activation code is <strong>{{ ACTIVATION }}</strong>
+
+Go to <a href="{% url 'activate' %}">activation</a> panel in your dashboard and enter your activation code.
+
+Sincerely,
+EditHub team
+{% endautoescape %}

@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block STYLESHEETS %}
+    <link href={% static "css/animate.css" %} rel="stylesheet" />
+{% endblock %}
+
+{% block MAIN_CONTENT %}
+
+      <section class="wrapper site-min-height">
+
+    <h3><i class="fa fa-angle-right"></i>Activate your account</h3>
+
+      {% if ERROR %}
+          {% for error in ERROR %}<h5 class="alert alert-danger">{{ error }}</h5>{% endfor %}
+      {% endif %}
+
+
+       {% if not USER_INFO.activated %}
+        <div class="row mt">
+          <div class="col-lg-12">
+            <div class="form-panel">
+              <h4 class="mb"><i class="fa fa-angle-right"></i> Email address</h4>
+              <form action="{% url 'activate' %}" class="form-inline" method="post" role="form">{% csrf_token %}
+                  <input type="hidden" name="form_type" value="activation">
+                  <div class="form-group col-md-1"></div>
+                <div class="form-group">
+                    <div class="col-lg-12">
+                    <h6 class="form-control-static">{{ USER_INFO.default_user.email }}</h6>
+                    </div>
+                </div>
+                  <div class="form-group col-md-1"></div>
+                <div class="form-group">
+                  <label class="sr-only" for="activation_code">Password</label>
+                  <input type="text" class="form-control" id="activation_code" placeholder="Activation Code" name="email_verification_code">
+                </div>
+                  <div class="form-group col-md-1"></div>
+                <button type="submit" class="btn btn-theme">Activate</button>
+               <button class="btn btn-theme04" id="resend-email"><i class="fas fa-redo"></i> Resend</button>
+              </form>
+            </div>
+            <!-- /form-panel -->
+          </div>
+          <!-- /col-lg-12 -->
+        </div>
+
+           <form id="resend_activation_email"action="{% url 'activate' %}" class="hidden" method="post" role="form">{% csrf_token %}
+               <input type="hidden" name="form_type" value="resend">
+            <input type="hidden" name="resend_activation_email" value="1" >
+           </form>
+       {% else %}
+        <div class="row mt">
+          <div class="col-lg-12">
+            <div class="form-panel">
+              <h4 class="mb text-success"><i class="fa fa-angle-right"></i> Your account is activated! </h4>
+            </div>
+            <!-- /form-panel -->
+          </div>
+          <!-- /col-lg-12 -->
+        </div>
+      {% endif %}
+
+        {% if USER_INFO.role == 'designer' and not USER_INFO.verified %}
+        <div class="row mt">
+          <div class="col-lg-12">
+            <div class="form-panel">
+              <h4 class="mb"><i class="fa fa-angle-right"></i> Phone Number</h4>
+              <form action="{% url 'activate' %}" class="form-inline" method="post" role="form">{% csrf_token %}
+                  <input type="hidden" name="form_type" value="activation">
+                  <div class="form-group col-md-1"></div>
+                <div class="form-group">
+                    <div class="col-lg-12">
+                    <h6 class="form-control-static">{{ USER_INFO.phone_number }}</h6>
+                    </div>
+                </div>
+                  <div class="form-group col-md-1"></div>
+                <div class="form-group">
+                  <label class="sr-only" for="verification_code">Password</label>
+                  <input type="text" class="form-control" id="verification_code" placeholder="Activation Code" name="phone_verification_code">
+                </div>
+                  <div class="form-group col-md-1"></div>
+                <button type="submit" class="btn btn-theme">Verify</button>
+               <button class="btn btn-theme04" id="resend-phone"><i class="fas fa-redo"></i> Resend</button>
+              </form>
+            </div>
+            <!-- /form-panel -->
+          </div>
+          <!-- /col-lg-12 -->
+        </div>
+
+       <form id="resend_verification_code" action="{% url 'activate' %}" class="hidden" method="post" role="form">{% csrf_token %}
+           <input type="hidden" name="form_type" value="resend">
+        <input type="hidden" name="resend_verification_code" value="1" >
+       </form>
+      {% endif %}
+
+
+      </section>
+{% endblock %}
+
+
+{% block SCRIPTS %}
+<script src={% static "lib/sweetalert/sweetalert2.all.min.js" %}></script>
+<script>
+
+{% if not USER_INFO.activated %}
+
+document.getElementById("resend-email").addEventListener("click", function(event){
+  event.preventDefault();
+    Swal.fire({
+      title: '<i class="fas fa-envelope-open"></i> Activation code was sent to your email address ',
+      showClass: {
+        popup: 'animated fadeInDown faster'
+      },
+      hideClass: {
+        popup: 'animated fadeOutUp faster'
+      }
+    }).then((result) => {
+        document.getElementById('resend_activation_email').submit();
+    })
+});
+
+{% endif %}
+
+{% if USER_INFO.role == 'designer' or USER_INFO.verified %}
+    document.getElementById("resend-phone").addEventListener("click", function(event){
+  event.preventDefault();
+    Swal.fire({
+      title: '<i class="fas fa-mobile"></i> Verification code was sent to your phone',
+      showClass: {
+        popup: 'animated fadeInDown faster'
+      },
+      hideClass: {
+        popup: 'animated fadeOutUp faster'
+      }
+    }).then((result) => {
+        document.getElementById('resend_verification_code').submit();
+    })
+});
+{% endif %}
+</script>
+
+{% endblock %}
+
+

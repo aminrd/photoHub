@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block STYLESHEETS %}
+    <link href={% static "lib/image-slider/css/twentytwenty.css" %} rel="stylesheet">
+{% endblock %}
+
+{% block MAIN_CONTENT %}
+      <section class="wrapper site-min-height">
+        <h3><i class="fa fa-angle-right"></i> {{ MAIN_TITLE }}</h3>
+        <div class="row mt">
+          <div class="col-lg-12">
+            <!-- /row - THIRD ROW OF PANELS -->
+            <!--  FOURTH ROW OF PANELS -->
+            <!--  FIFTH ROW OF PANELS -->
+
+          {% for ROW in PLIST_ROWS %}
+            <div class="row">
+                {% for P in ROW %}
+
+            {% if P %}
+                  <div class="col-lg-4 col-md-4 col-sm-4 mb">
+                    <div class="pn">
+                        <div class="twentytwenty-container">
+                          <img src="{{ P.input_image.url }}" style="height: 180px; width: 100%; object-fit: cover;">
+                        {% if P.output_image %}
+                          <img src="{{ P.output_image.url }}" style="height: 180px; width: 100%; object-fit: cover;">
+                        {% else %}
+                            <img src="{{ P.input_image.url }}" style="height: 180px; width: 100%; object-fit: cover;">
+                        {% endif %}
+                        </div>
+                      <div class="mt centered">
+                      <div class="row text-light" style="margin-top: -40px !important; padding-bottom: 20px !important;">
+                          <div class="col-1"></div>
+                          <div class="col-3 bg-theme03">Editor</div>
+                          <div class="col-4 bg-theme03">Score</div>
+                          <div class="col-3 bg-theme03">Open this edit</div>
+                          <div class="col-1"></div>
+                      </div>
+                      <div class="row">
+                      <div class="col-4">
+                          {% if P.server %}
+                           <a href="/profile/{{ P.server.default_user.id }}/"> <img src="{{ P.server.get_profile_thumbnail }}" class="rounded-circle" width="40" style="margin-top: -10px !important;">
+                                {{ P.server.default_user.first_name }}</a>
+                          {% else %}
+                           <a href="#">
+                                N/A</a>
+                          {% endif %}
+                      </div>
+                      <div class="col-4">
+                      {% if P.owner_feedback > 0%}
+                                  {% for r in P.get_feedback_range %}
+                                    <i class="fas fa-star fa-xs text-info" style="font-size: small;"></i>
+                                  {% endfor %}
+                      {% else %}
+                          <p class="text-info">N/A</p>
+                      {% endif %}
+                      </div>
+                      <div class="col-4">
+                          <a href="/project/{{ P.id }}/"><i class="fas fa-external-link-square-alt fa-2x text-info"></i></a>
+                      </div>
+                      </div>
+                      </div>
+                    </div>
+                    <!-- /panel -->
+                  </div>
+                  <!--/ col-md-4 -->
+            {% endif %}
+
+            {% endfor %}
+            </div>
+          {% endfor %}
+
+          <div class="row justify-content-center">
+            {% if PAGINATE.has_other_pages %}
+              <ul class="pagination">
+                {% if PAGINATE.has_previous %}
+                  <li class="page-item"><a class="page-link" href="?page={{ PAGINATE.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                  <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                {% endif %}
+                {% for i in PAGINATE.paginator.page_range %}
+
+                 {% if i <= PAGINATE.number|add:2 and i >= PAGINATE.number|add:-2 %}
+
+                  {% if PAGINATE.number == i %}
+                    <li class="page-item active" ><span class="page-link" style="background-color: #4ECDC4;">{{ i }} <span class="sr-only">(current)</span></span></li>
+                  {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                  {% endif %}
+
+                {% endif %}
+
+                {% endfor %}
+                {% if PAGINATE.has_next %}
+                  <li class="page-item"><a class="page-link" href="?page={{ PAGINATE.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                  <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                {% endif %}
+              </ul>
+            {% endif %}
+          </div>
+            <!-- /row FIFTH ROW OF PANELS -->
+            <!--  SIXTH ROW OF PANELS -->
+            <!-- Product Panel -->
+            <!--  END SIXTH ROW OF PANELS -->
+          </div>
+        </div>
+      </section>
+      <!-- /wrapper -->
+{% endblock %}
+
+
+{% block SCRIPTS %}
+<script src={% static "lib/image-slider/js/jquery.event.move.js" %}></script>
+<script src={% static "lib/image-slider/js/jquery.twentytwenty.js" %}></script>
+<script>$(function(){$(".twentytwenty-container").twentytwenty();});</script>
+{% endblock %}

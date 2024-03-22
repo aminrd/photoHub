@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block STYLESHEETS %}
+    <link href={% static "lib/image-slider/css/twentytwenty.css" %} rel="stylesheet">
+{% endblock %}
+
+{% block MAIN_CONTENT %}
+     <section class="wrapper site-min-height">
+        <h3><i class="fa fa-angle-right"></i> Open Requests</h3>
+        <hr>
+
+         {% for ROW in PLIST_ROWS %}
+        <div class="row mt">
+        {% for PROJECT in ROW %}
+            {% if PROJECT %}
+
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 desc">
+            <div class="project-wrapper">
+              <div class="project">
+                <div class="photo-wrapper" >
+                  <div class="photo">
+                    <a class="fancybox" href="/project/{{ PROJECT.id }}/" target="_blank">
+                        <img class="img-responsive" src="{{ PROJECT.input_image.url }}" width="400" height="273" alt="project-image">
+                    </a>
+                  </div>
+                  <div class="overlay"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+         {% endfor %}
+        <!-- /row -->
+
+
+
+
+
+
+          <div class="row justify-content-center">
+            {% if PAGINATE.has_other_pages %}
+              <ul class="pagination">
+                {% if PAGINATE.has_previous %}
+                  <li class="page-item"><a class="page-link" href="?page={{ PAGINATE.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                  <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                {% endif %}
+                {% for i in PAGINATE.paginator.page_range %}
+
+                 {% if i <= PAGINATE.number|add:2 and i >= PAGINATE.number|add:-2 %}
+
+                  {% if PAGINATE.number == i %}
+                    <li class="page-item active" ><span class="page-link" style="background-color: #4ECDC4;">{{ i }} <span class="sr-only">(current)</span></span></li>
+                  {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                  {% endif %}
+
+                {% endif %}
+
+                {% endfor %}
+                {% if PAGINATE.has_next %}
+                  <li class="page-item"><a class="page-link" href="?page={{ PAGINATE.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                  <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                {% endif %}
+              </ul>
+            {% endif %}
+          </div>
+
+
+
+
+      </section>
+{% endblock %}
+
+
+{% block SCRIPTS %}
+  <script type="text/javascript">
+    $(function() {
+      //    fancybox
+      jQuery(".fancybox").fancybox();
+    });
+  </script>
+{% endblock %}

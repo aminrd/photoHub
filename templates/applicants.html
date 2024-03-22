@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block STYLESHEETS %}
+{% endblock %}
+
+{% block MAIN_CONTENT %}
+      <section class="wrapper">
+        <div class="row mt justify-content-center">
+            <img src="{{ PROJECT.input_image.url }}" width="400" height="300">
+        </div>
+
+      {% if ERROR %}
+          {% for error in ERROR %}<h5 class="alert alert-danger">{{ error }}</h5>{% endfor %}
+      {% endif %}
+        <!-- row -->
+        <div class="row mt">
+          <div class="col-md-12">
+            <div class="content-panel">
+              <table class="table table-striped table-advance table-hover">
+                  <h4><i class="fa fa-angle-right"></i> These applicants are ready to edit <a target="_blank" href="/project/{{ PROJECT.id }}/">your</a> request</h4>
+                <hr>
+                <thead>
+                  <tr>
+                    <th><i class="fa fa-bullhorn"></i> Editor</th>
+                    <th class="hidden-phone"><i class="fas fa-angle-double-up"></i> Level</th>
+                    <th class="hidden-phone"><i class="fas fa-star"></i> Feedbacks</th>
+                    <th><i class="fa fa-bookmark"></i> Rate</th>
+                    <th><i class="fa fa-check"></i> Approve applicant</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for applicant in PROJECT.get_applicants_all %}
+                  <tr>
+                    <td>
+                        <img src="{{ applicant.get_profile_thumbnail }}" class="rounded-circle" width="30" height="30">
+                      <a href="/profile/{{ applicant.default_user.id }}/" target="_blank">{{ applicant.full_name }}</a>
+                    </td>
+                    <td class="hidden-phone h6">{{ applicant.get_level }}</td>
+                    <td>
+                    {% for star in applicant.get_feedback_range.0 %}<i class="fas fa-star fa-xs text-warning" ></i>{% endfor %}
+                      {% if applicant.get_feedback_range.1 %}<i class="fas fa-star-half fa-xs text-warning" ></i> {% endif %}
+                    </td>
+                    <td>
+                        {% if applicant.get_rate <= 0 %}
+                            <span class="label label-info label-mini"><div class="badge text-light bg-theme02">FREE</div></span>
+                        {% else %}
+                            <span class="label label-info label-mini">{{ applicant.get_rate }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                      <button class="btn btn-success btn-xs" onclick="approve_editor({{ applicant.default_user.id }})"><i class="fa fa-check"></i> approve</button>
+                    </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <!-- /content-panel -->
+          </div>
+          <!-- /col-md-12 -->
+        </div>
+        <!-- /row -->
+      </section>
+    <form class="hiddene" method="post" id="applicant_approval_form" action="#" >{% csrf_token %}
+        <input type="hidden" name="applicant_id" value="0" id="applicant_id_input">
+    </form>
+{% endblock %}
+
+
+{% block SCRIPTS %}
+<script src={% static "lib/sweetalert/sweetalert2.all.min.js" %}></script>
+<script>const swalWithBootstrapButtons = Swal.mixin({
+  customClass: {
+    confirmButton: 'btn btn-success',
+    cancelButton: 'btn btn-danger'
+  },
+  buttonsStyling: false
+});
+
+function approve_editor(editor_id) {
+    let input_element = document.getElementById('applicant_id_input');
+    input_element.value = editor_id;
+
+    swalWithBootstrapButtons.fire({
+      title: 'Are you sure?',
+      text: "You are not able to change the editor after approving",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, continue!',
+      cancelButtonText: 'No, cancel!',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.value) {
+          // submit application:
+      document.getElementById('applicant_approval_form').submit();
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire(
+          'Cancelled',
+          'Review other applicants',
+          'error'
+        )
+      }
+    });
+}
+</script>
+{% endblock %}

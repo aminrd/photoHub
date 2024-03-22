@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block STYLESHEETS %}
+{% endblock %}
+
+{% block MAIN_CONTENT %}
+     <section class="wrapper site-min-height">
+        <h3><i class="fa fa-angle-right"></i> Active Editors in PhotoHub</h3>
+        <hr>
+
+             <table class="table table-striped">
+                      <thead class="thead-dark">
+                        <tr>
+                          <th scope="col">Profile</th>
+                          <th scope="col">Editor Name</th>
+                          <th scope="col">Joined PhotoHub</th>
+                          <th scope="col">Level</th>
+                            <th scope="col">Score</th>
+                            <th scope="col">Average Feedback</th>
+                            <th scope="col">Link</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for EDITOR in PAGINATE %}
+                        <tr>
+                          <th scope="row"><img class="img-responsive" src="{{ EDITOR.get_profile_thumbnail }}" width="60" height="60" alt="{{ EDITOR.default_user.first_name }}-image"></th>
+                          <td>{{ EDITOR.default_user.first_name }} {{ EDITOR.default_user.last_name }}</td>
+                          <td>{{ EDITOR.default_user.date_joined }}</td>
+                          <td>{{ EDITOR.get_level }}</td>
+                        <td>{{ EDITOR.score }}</td>
+                        <td>
+                          {% for star in EDITOR.get_feedback_range.0 %}<i class="fas fa-star fa-xs text-warning" ></i>{% endfor %}
+                          {% if EDITOR.get_feedback_range.1 %}<i class="fas fa-star-half fa-xs text-warning" ></i> {% endif %}
+                        </td>
+                        <td><a href="/profile/{{ EDITOR.default_user.id }}/">See profile<i class="fas fa-link"></i></a></td>
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+             </table>
+
+
+
+          <div class="row justify-content-center">
+            {% if PAGINATE.has_other_pages %}
+              <ul class="pagination">
+                {% if PAGINATE.has_previous %}
+                  <li class="page-item"><a class="page-link" href="?page={{ PAGINATE.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                  <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                {% endif %}
+                {% for i in PAGINATE.paginator.page_range %}
+
+                 {% if i <= PAGINATE.number|add:2 and i >= PAGINATE.number|add:-2 %}
+
+                  {% if PAGINATE.number == i %}
+                    <li class="page-item active" ><span class="page-link" style="background-color: #4ECDC4;">{{ i }} <span class="sr-only">(current)</span></span></li>
+                  {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                  {% endif %}
+
+                {% endif %}
+
+                {% endfor %}
+                {% if PAGINATE.has_next %}
+                  <li class="page-item"><a class="page-link" href="?page={{ PAGINATE.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                  <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                {% endif %}
+              </ul>
+            {% endif %}
+          </div>
+
+
+
+
+      </section>
+{% endblock %}
+
+
+{% block SCRIPTS %}
+  <script type="text/javascript">
+    $(function() {
+      //    fancybox
+      jQuery(".fancybox").fancybox();
+    });
+  </script>
+{% endblock %}
